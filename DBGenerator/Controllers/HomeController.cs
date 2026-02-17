@@ -1,26 +1,43 @@
-using System.Diagnostics;
+using DBGenerator.GenerateEngine;
 using DBGenerator.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Diagnostics;
+using System.Net.Sockets;
 
 namespace DBGenerator.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private IDBGenAppService _dbGenAppService;
+        private IGenDataFactory _dbGenDataFactory;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IDBGenAppService dBGenAppService, IGenDataFactory genDataFactory)
         {
             _logger = logger;
+            _dbGenAppService = dBGenAppService;
+            _dbGenDataFactory = genDataFactory;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var model = await _dbGenAppService.GetDbGenViewModelAsync();
+            return View(model);
         }
 
-        public IActionResult Privacy()
+        [HttpPost]
+        public async Task<IActionResult> GenerateDatabase(DBGenViewModel model)
         {
-            return View();
+            var newModel = await _dbGenAppService.GetDbGenViewModelAsync();
+
+            var genData = _dbGenDataFactory.Create(model.SelectedEngine.Value);
+            newModel.Script = genData.Generate(model.SelectedDatabase.Value);
+
+            newModel.SelectedEngine = model.SelectedEngine;
+            newModel.SelectedDatabase = model.SelectedDatabase;
+
+            return View("Index", newModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
