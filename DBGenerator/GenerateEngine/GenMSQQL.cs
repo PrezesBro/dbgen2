@@ -14,7 +14,7 @@ namespace DBGenerator.GenerateEngine
 
         public string Generate(int databaseId)
         {
-            return "SELECT 'Jakiś skrypcik SQL'";
+            return "--komentarz\nSELECT 'Jakiś skrypcik SQL'";
         }
     }
 }
