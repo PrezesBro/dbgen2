@@ -1,4 +1,5 @@
 ﻿using DBGenerator.Models;
+using DBGenerator.Models.Ads;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
@@ -16,5 +17,6 @@ namespace DBGenerator.Data
         public DbSet<Table> Tables { get; set; }
         public DbSet<Column> Columns { get; set; }
         public DbSet<Datas> Datas { get; set; }
+        public DbSet<Ads> Ads { get; set; }
     }
 }
