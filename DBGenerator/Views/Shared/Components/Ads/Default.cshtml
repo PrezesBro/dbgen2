@@ -1,0 +1,24 @@
+﻿@using DBGenerator.Models.Ads
+@model AdsViewModel
+
+@foreach(var ads in Model.Ads)
+{
+    <div class="@(Model.Position == DBGenerator.Models.Ads.Position.Right ? "row" : "col-3")">
+        <a href="@ads.DestinationUrl">
+            <div class="ads-container" style="background-color: @ads.BackgroundColor">
+                <div class="col-12 ads-image"><img src="@ads.ImageUrl"/></div>
+                <div class="col-12 ads-title text-white"><h3>@ads.Title</h3></div>
+                <div class="col-12 ads-desc text-white"><p>@ads.Description</p></div>
+                <div class="col-12 ads-desc text-white">
+                
+                        @if(ads.IsPromotion){
+                            <p class="ads-price">Cena: <span class="ads-price-promo">@ads.PromoPrice</span><span class="ads-price-old">@ads.Price</span>zł</p>
+                        }
+                        else{
+                            <p class="ads-price">Cena: @ads.Price zł</p>
+                        }
+                </div>
+            </div>
+        </a>
+    </div>
+}

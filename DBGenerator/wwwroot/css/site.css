@@ -18,5 +18,62 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: var(--bg);
+    color: var(--fg);
+}
+
+
+:root[data-theme="dark"] {
+    --bg: #0f1115;
+    --fg: #e5e7eb;
+    --card-bg: #141821;
+    --border: #2a3140;
+}
+
+header {
+    background: #0f1115;
+}
+
+.code{
+    max-height: 500px;
+    border-radius: .25rem;
+}
+
+.ads-container{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    height:95%;
+}
+
+.ads-image{
+    width:100%;
+    padding: 0px;
+}
+
+.ads-image img{
+    width:100%;
+}
+
+.ads-title{
+    margin: 10px;
+}
+
+.ads-desc{
+    padding: 10px;
+}
+
+.ads-price{
+    font-size: 20px;
+    font-weight: 600
+}
+
+.ads-price-promo{
+    font-size: 30px;
+}
+
+.ads-price-old{
+    text-decoration: line-through;
+    color: red;
 }
