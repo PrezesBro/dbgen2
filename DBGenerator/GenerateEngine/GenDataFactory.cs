@@ -12,9 +12,9 @@ namespace DBGenerator.GenerateEngine
             _data = data;
         }
 
-        public IGenData Create(EngineType type) => type switch
+        public GenEngine Create(EngineType type) => type switch
         {
-            EngineType.MSSQL => new GenMSQQL(_data),
+            EngineType.MSSQL => new GenEngine(new GenMSQQL(), _data),
             //kolejne silniki
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Nieobsługiwany silnik bazy danych.")
         };

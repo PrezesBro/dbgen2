@@ -4,6 +4,6 @@ namespace DBGenerator.GenerateEngine
 {
     public interface IGenDataFactory
     {
-        IGenData Create(EngineType type);
+        GenEngine Create(EngineType type);
     }
 }

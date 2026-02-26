@@ -27,17 +27,25 @@ namespace DBGenerator.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerateDatabase(DBGenViewModel model)
+        public async Task<IActionResult> GenerateDatabase(DBGenViewModel model, string actionType)
         {
-            var newModel = await _dbGenAppService.GetDbGenViewModelAsync();
-
             var genData = _dbGenDataFactory.Create(model.SelectedEngine.Value);
-            newModel.Script = genData.Generate(model.SelectedDatabase.Value);
+            var script = await genData.GenerateAsync(model.SelectedDatabase.Value);
 
-            newModel.SelectedEngine = model.SelectedEngine;
-            newModel.SelectedDatabase = model.SelectedDatabase;
+            if (actionType == "generate")
+            {
+                var newModel = await _dbGenAppService.GetDbGenViewModelAsync();
 
-            return View("Index", newModel);
+                newModel.Script = script;
+
+                newModel.SelectedEngine = model.SelectedEngine;
+                newModel.SelectedDatabase = model.SelectedDatabase;
+
+                return View("Index", newModel);
+            }
+
+            var file = System.Text.Encoding.UTF8.GetBytes(script);
+            return File(file, "application/sql", $"skrypt.sql");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

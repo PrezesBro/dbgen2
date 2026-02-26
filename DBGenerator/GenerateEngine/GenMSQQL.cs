@@ -6,43 +6,35 @@ namespace DBGenerator.GenerateEngine
 {
     public class GenMSQQL : IGenData
     {
-        private IDataFacade _data;
+        public string ctCreateTable(string tableName) => $"CREATE TABLE {tableName}";
 
-        public GenMSQQL(IDataFacade data)
+        public string ctOpen() => "(";
+
+        public string ctClose() => ")\n";
+
+        public string ctId(string tableName) => $"\tId{tableName} INT IDENTITY (1,1) PRIMARY KEY,";
+
+        public string ctColumn(Column column) => $"\t{column.Name} {GetDataType(column)},";
+
+        public string iInsert(List<Column> columns, Table table) 
         {
-            _data = data;
+            var col = String.Join(", ", columns.Select(c => c.Name));
+            var result = $"INSERT INTO {table.Name} ({col})\n";
+            result += "VALUES ";
+            result += string.Join(",\n\t", GetValues(table.Datas.ToList(), table.Columns.ToList()));
+
+            return result;
+        }
+
+        public string fkGet(string tableName, ForeignKey fk)
+        {
+            string result = $"ALTER TABLE {tableName}\n";
+            result += $"\tADD CONSTRAINT FK_{tableName}_{fk.TablePkName}\n";
+            result += $"\tFOREIGN KEY({fk.ColumnFkName}) REFERENCES {fk.TablePkName}(Id{fk.TablePkName})";
+            return result;
         }
 
 
-        public string Generate(int databaseId)
-        {
-            var database = _data.GetDatabaseById(databaseId);
-            string x = "";
-
-            x += string.Join("\n", GetScriptCreateTable(database.Tables.ToList()));
-            x += "\n\n\n";
-            x += string.Join("\n", GetInsertScript(database.Tables.ToList()));
-            x += "\n\n\n";
-            x += string.Join("\n", GetConstrains(database.Tables.ToList()));
-            return x;
-        }
-
-        private IEnumerable<string> GetScriptCreateTable(List<Table> tables)
-        {
-            foreach (var table in tables)
-            {
-                yield return $"CREATE TABLE {table.Name}";
-                yield return "(";
-                yield return $"Id{table.Name} INT IDENTITY (1,1) PRIMARY KEY,";
-
-                foreach (var column in table.Columns)
-                {
-                    yield return $"{column.Name} {GetDataType(column)},";
-                }
-                yield return ")\n";
-
-            }
-        }
 
         private string GetDataType(Column column)
         {
@@ -61,38 +53,6 @@ namespace DBGenerator.GenerateEngine
             }
         }
 
-        private IEnumerable<string> GetInsertScript(List<Table> tables)
-        {
-            foreach (var table in tables)
-            {
-                var tabColumns = table.Columns.ToList(); 
-                var columns = string.Join(", ", tabColumns.Select(c => c.Name));
-
-                yield return $"\nINSERT INTO {table.Name} ({columns})";
-                yield return $"VALUES";               
-                yield return string.Join(",\n", GetValues(table.Datas.ToList(), tabColumns));        
-            }
-        }
-
-        private IEnumerable<string> GetConstrains(List<Table> tables)
-        {
-            
-            foreach (var table in tables)
-            {
-                if (table.ForeignKeys.Count > 0)
-                {
-
-                    foreach (var fk in table.ForeignKeys)
-                    {
-                        yield return $"ALTER TABLE {table.Name}";
-                        yield return $"ADD CONSTRAINT FK_{table.Name}_{fk.TablePkName}";
-                        yield return $"FOREIGN KEY({fk.ColumnFkName}) REFERENCES {fk.TablePkName}(Id{fk.TablePkName})";
-                        yield return "";
-                    }
-                }          
-            }
-        }
-     
         private string ValueForDatabase(string value, DataType type)
         {
             switch (type)
@@ -101,9 +61,9 @@ namespace DBGenerator.GenerateEngine
                 case DataType.Date:
                     return $"'{value.Replace("'", "''")}'";
                 case DataType.Integer:
-                    return value; 
+                    return value;
                 case DataType.Decimal:
-                    return value.Replace(',', '.'); 
+                    return value.Replace(',', '.');
                 default:
                     return $"'{value}'";
             }
@@ -119,7 +79,7 @@ namespace DBGenerator.GenerateEngine
                 {
                     var col = tabColumns[i];
                     var dat = values[i];
-                    vals.Add(ValueForDatabase(dat, col.DataType));                   
+                    vals.Add(ValueForDatabase(dat, col.DataType));
                 }
                 yield return $"({string.Join(',', vals)})";
             }
