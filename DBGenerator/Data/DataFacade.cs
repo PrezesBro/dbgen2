@@ -19,7 +19,17 @@ namespace DBGenerator.Data
 
         }
 
-
+        public Database GetDatabaseById(int databaseId)
+        {
+            return _db.Databases
+                .Include(d => d.Tables)
+                    .ThenInclude(t => t.Columns)
+                .Include(d => d.Tables)
+                    .ThenInclude(t => t.Datas)
+                .Include(d => d.Tables)
+                    .ThenInclude(t => t.ForeignKeys)
+                .FirstOrDefault(d => d.Id == databaseId);
+        }
 
 
         public Task<List<Ads>> GetAds(Position position, bool onlyVisible, bool order)

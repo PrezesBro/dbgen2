@@ -7,7 +7,7 @@ namespace DBGenerator.Data
     {
         Task<List<Database>> GetNewestDatabases();
 
-
+        Database GetDatabaseById(int id);
 
         Task<List<Ads>> GetAds(Position position, bool onlyVisible, bool order);
         public Task<List<Ads>> GetAllAds();
