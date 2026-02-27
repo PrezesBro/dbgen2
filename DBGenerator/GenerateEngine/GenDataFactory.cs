@@ -15,7 +15,9 @@ namespace DBGenerator.GenerateEngine
         public GenEngine Create(EngineType type) => type switch
         {
             EngineType.MSSQL => new GenEngine(new GenMSQQL(), _data),
-            //kolejne silniki
+            
+            EngineType.Oracle => new GenEngine(new GenOracle(), _data), 
+
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Nieobsługiwany silnik bazy danych.")
         };
     }

@@ -1,10 +1,9 @@
-﻿using DBGenerator.Data;
-using DBGenerator.Models;
+﻿using DBGenerator.Models;
 
 
 namespace DBGenerator.GenerateEngine
 {
-    public class GenMSQQL : IGenData
+    public class GenOracle : IGenData
     {
         public string ctCreateTable(string tableName) => $"CREATE TABLE {tableName}";
 
@@ -12,26 +11,25 @@ namespace DBGenerator.GenerateEngine
 
         public string ctClose() => ")\n";
 
-        public string ctId(string tableName) => $"\tId{tableName} INT IDENTITY (1,1) PRIMARY KEY,";
+        public string ctId(string tableName) => $"\tId{tableName} NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,";
 
        
         public string ctColumn(Column column) => $"\t{column.Name} {GetDataType(column)}";
 
-        public string iInsert(List<Column> columns, Table table) 
+        public string iInsert(List<Column> columns, Table table)
         {
             var col = String.Join(", ", columns.Select(c => c.Name));
-            var result = $"INSERT INTO {table.Name} ({col})\n";
-            result += "VALUES ";
-            result += string.Join(",\n\t", GetValues(table.Datas.ToList(), table.Columns.ToList()));
+            var inserts = GetValues(table.Datas.ToList(), table.Columns.ToList())
+                .Select(v => $"INSERT INTO {table.Name} ({col}) VALUES {v};");
 
-            return result;
+            return string.Join("\n", inserts);
         }
 
         public string fkGet(string tableName, ForeignKey fk)
         {
             string result = $"ALTER TABLE {tableName}\n";
             result += $"\tADD CONSTRAINT FK_{tableName}_{fk.TablePkName}\n";
-            result += $"\tFOREIGN KEY({fk.ColumnFkName}) REFERENCES {fk.TablePkName}(Id{fk.TablePkName})";
+            result += $"\tFOREIGN KEY({fk.ColumnFkName}) REFERENCES {fk.TablePkName}(Id{fk.TablePkName});";
             return result;
         }
 
@@ -42,15 +40,15 @@ namespace DBGenerator.GenerateEngine
             switch (column.DataType)
             {
                 case DataType.Text:
-                    return $"varchar({column.Precision})";
+                    return $"VARCHAR2({column.Precision})";
                 case DataType.Integer:
-                    return "int";
+                    return "NUMBER";
                 case DataType.Decimal:
-                    return $"decimal({column.Precision})";
+                    return $"NUMBER({column.Precision})";
                 case DataType.Date:
-                    return "datetime";
+                    return "DATE";
                 default:
-                    return "varchar(max)";
+                    return "VARCHAR2(4000)";
             }
         }
 
@@ -59,8 +57,9 @@ namespace DBGenerator.GenerateEngine
             switch (type)
             {
                 case DataType.Text:
+                    return $"'{value.Replace("'", "''")}'";                
                 case DataType.Date:
-                    return $"'{value.Replace("'", "''")}'";
+                    return $"DATE '{value}'";
                 case DataType.Integer:
                     return value;
                 case DataType.Decimal:
@@ -85,7 +84,6 @@ namespace DBGenerator.GenerateEngine
                 yield return $"({string.Join(',', vals)})";
             }
         }
-
         public string ctColumnsDefinition(IEnumerable<Column> columns)
         {
             return string.Join(",\n", columns.Select(c => ctColumn(c)));

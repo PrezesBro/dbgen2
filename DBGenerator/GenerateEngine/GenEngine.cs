@@ -51,10 +51,8 @@ namespace DBGenerator.GenerateEngine
                 yield return _gen.ctOpen();
                 yield return _gen.ctId(table.Name);
 
-                foreach(var col in table.Columns)
-                {
-                    yield return _gen.ctColumn(col);
-                }
+                yield return _gen.ctColumnsDefinition(table.Columns);
+
                 yield return _gen.ctClose();
             }
             yield return "\n\n";
