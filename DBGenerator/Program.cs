@@ -1,3 +1,4 @@
+using DBGenerator.Admin;
 using DBGenerator.Data;
 using DBGenerator.GenerateEngine;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +15,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<IDataFacade, DataFacade>();
 builder.Services.AddScoped<IDBGenAppService, DBGenAppService>();
+builder.Services.AddScoped<IAdminAppService, AdminAppService>();
 builder.Services.AddScoped<IGenDataFactory, GenDataFactory>();
 
 builder.Services.AddControllersWithViews();

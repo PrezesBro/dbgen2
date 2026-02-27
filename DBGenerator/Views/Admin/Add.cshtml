@@ -1,0 +1,65 @@
+﻿@model DBGenerator.Models.Database
+
+@{
+    if(Model.Id == 0) ViewData["Title"] = "Dodaj bazę danych";
+    else ViewData["Title"] = $"Edytujesz bazę: {Model.Name} | wersja: {Model.Version}";
+    
+}
+
+@if(Model.Id == 0)
+{
+    <h1>Dodaj bazę danych</h1>
+}
+else
+{
+    <h1>Edytujesz bazę: @Model.Name</h1>
+}
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="SaveDatabase">
+            <input hidden asp-for="Id"/>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Version" class="control-label"></label>
+                <input asp-for="Version" class="form-control" />
+                <span asp-validation-for="Version" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="CreateDate" class="control-label"></label>
+                <input asp-for="CreateDate" class="form-control" />
+                <span asp-validation-for="CreateDate" class="text-danger"></span>
+            </div>
+            <div class="form-check form-switch mb-3">
+                <input type="checkbox" role="switch" asp-for="IsVisible" class="form-check-input" />
+                <label asp-for="IsVisible" class="form-check-label"></label>
+                <span asp-validation-for="IsVisible" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <input type="submit" value="Zapisz" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <a asp-action="Index">Powrót do listy</a>
+</div>
+@if(Model.Id != 0)
+{
+    <div class="row">
+        <partial name="_TablesList" model="@Model.Tables" />
+    </div>
+}
+

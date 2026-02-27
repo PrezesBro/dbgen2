@@ -18,6 +18,7 @@ namespace DBGenerator.Models
         public IEnumerable<SelectListItem> Databases { get; set; }
 
         public string Script { get; set; }
+        public string YouTubeCode { get; set; }
         
     }
 }

@@ -1,0 +1,46 @@
+﻿@model DBGenerator.Models.Table
+
+@{
+    if (Model.Id == 0) ViewData["Title"] = "Dodaj tabelę";
+    else ViewData["Title"] = $"Edytujesz tabelę {Model.Name}";
+}
+
+@if(Model.Id == 0)
+{
+    <h1>Dodaj tabelę</h1>
+}
+else
+{
+    <h1>Edytujesz tabelę @Model.Name</h1>
+}
+
+
+<h4>Table</h4>
+<hr />
+<div class="row">
+    <div class="col-12 mb-3">
+        <form asp-action="SaveTable">
+            <input hidden asp-for="Id"/>
+            <input hidden asp-for="Database.Id"/>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="btn-group mb-3">
+                <input type="submit" value="Zapisz" class="btn btn-primary" />
+                @if (Model.Id != 0)
+                {
+                    <a asp-route-id="@Model.Id" class="btn btn-success" asp-area="" asp-controller="Admin" asp-action="EditColumn">Edytuj kolumny</a>
+                    <a asp-route-id="@Model.Id" class="btn btn-success" asp-area="" asp-controller="Admin" asp-action="EditData">Edytuj dane</a>
+                    <a asp-route-id="@Model.Id" class="btn btn-success" asp-area="" asp-controller="Admin" asp-action="EditFK">Edytuj klucze obce</a>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <a asp-action="Index">Powrót do listy tabel</a>
+</div>
