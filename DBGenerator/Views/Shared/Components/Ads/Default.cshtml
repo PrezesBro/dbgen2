@@ -3,7 +3,7 @@
 
 @foreach(var ads in Model.Ads)
 {
-    <div class="@(Model.Position == DBGenerator.Models.Ads.Position.Right ? "row" : "col-3")">
+    <div class="@(Model.Position == DBGenerator.Models.Ads.Position.Right ? "row" : "col-lg-3")">
         <a href="@ads.DestinationUrl">
             <div class="ads-container" style="background-color: @ads.BackgroundColor">
                 <div class="col-12 ads-image"><img src="@ads.ImageUrl"/></div>
@@ -13,9 +13,10 @@
                 
                         @if(ads.IsPromotion){
                             <p class="ads-price">Cena: <span class="ads-price-promo">@ads.PromoPrice</span><span class="ads-price-old">@ads.Price</span>zł</p>
+                            <p>Promocja trwa do: @ads.EndPromotion.ToString("yyyy-MM-dd HH:mm")</p>
                         }
                         else{
-                            <p class="ads-price">Cena: @ads.Price zł</p>
+                            <p class="ads-price">Cena: <span class="ads-price-promo">@ads.Price</span> zł</p>
                         }
                 </div>
             </div>
