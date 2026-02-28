@@ -18,6 +18,8 @@ namespace DBGenerator.GenerateEngine
             
             EngineType.Oracle => new GenEngine(new GenOracle(), _data), 
 
+            EngineType.MySQL => new GenEngine(new GenMySQL(), _data), 
+
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Nieobsługiwany silnik bazy danych.")
         };
     }
