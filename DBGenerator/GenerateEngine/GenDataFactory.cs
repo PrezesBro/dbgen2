@@ -20,6 +20,8 @@ namespace DBGenerator.GenerateEngine
 
             EngineType.MySQL => new GenEngine(new GenMySQL(), _data), 
 
+            EngineType.SQLite => new GenEngine(new GenSQLite(), _data), 
+
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Nieobsługiwany silnik bazy danych.")
         };
     }

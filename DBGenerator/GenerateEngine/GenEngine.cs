@@ -1,13 +1,14 @@
 ﻿using DBGenerator.Data;
 using DBGenerator.Models;
 
+
 namespace DBGenerator.GenerateEngine
 {
     public class GenEngine
     {
         private readonly IGenData _gen;
         private readonly IDataFacade _data;
-        public GenEngine(IGenData gen, IDataFacade data) 
+        public GenEngine(IGenData gen, IDataFacade data)
         {
             _gen = gen;
             _data = data;
@@ -45,14 +46,26 @@ namespace DBGenerator.GenerateEngine
 
         private IEnumerable<string> GetScriptCreateTable(List<Table> tables)
         {
+            
+
             foreach (var table in tables)
             {
                 yield return _gen.ctCreateTable(table.Name);
                 yield return _gen.ctOpen();
                 yield return _gen.ctId(table.Name);
 
-                yield return _gen.ctColumnsDefinition(table.Columns);
+                if (!(_gen is GenSQLite))
+                {
+                    yield return _gen.ctColumnsDefinition(table.Columns);
+                }
 
+                if (_gen is GenSQLite sqlite) //dodaje klucze obce po CREATE i rozdziela przcinkiem pod podwójnymi kluczami
+                {
+                    foreach (var line in sqlite.ctColumnsAndForeignKeys(table))
+                    {
+                        yield return line;
+                    }
+                }
                 yield return _gen.ctClose();
             }
             yield return "\n\n";
@@ -60,7 +73,8 @@ namespace DBGenerator.GenerateEngine
 
         private IEnumerable<string> GetInsertScript(List<Table> tables)
         {
-            foreach(var table in tables)
+           
+            foreach (var table in tables)
             {
                 var columns = table.Columns.ToList();
 
@@ -72,11 +86,14 @@ namespace DBGenerator.GenerateEngine
 
         private IEnumerable<string> GetForeignKeys(List<Table> tables)
         {
-            foreach(var table in tables)
+            if (_gen is GenSQLite)
+                yield break;
+
+            foreach (var table in tables)
             {
-                if(table.ForeignKeys.Count > 0)
+                if (table.ForeignKeys.Count > 0)
                 {
-                    foreach(var fk in table.ForeignKeys)
+                    foreach (var fk in table.ForeignKeys)
                     {
                         yield return _gen.fkGet(table.Name, fk);
                         yield return String.Empty;
