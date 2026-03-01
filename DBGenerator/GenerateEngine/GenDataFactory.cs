@@ -22,6 +22,8 @@ namespace DBGenerator.GenerateEngine
 
             EngineType.SQLite => new GenEngine(new GenSQLite(), _data), 
 
+            EngineType.Postgres => new GenEngine(new GenPostgres(), _data),
+
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Nieobsługiwany silnik bazy danych.")
         };
     }
