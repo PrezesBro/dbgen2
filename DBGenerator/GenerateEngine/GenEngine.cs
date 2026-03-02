@@ -14,23 +14,9 @@ namespace DBGenerator.GenerateEngine
             _data = data;
         }
 
-        public string Generate(int databaseId)
-        {
-            string result = string.Empty;
-
-            var database = _data.GetDatabaseById(databaseId);
-            var tables = database.Tables.ToList();
-
-            result += String.Join("\n", GetScriptCreateTable(tables));
-            result += String.Join("\n", GetInsertScript(tables));
-            result += String.Join("\n", _gen.GetForeignKeys(tables));
-
-            return result;
-        }
-
         public async Task<string> GenerateAsync(int databaseId)
         {
-            var database = _data.GetDatabaseById(databaseId);
+            var database = await _data.GetDatabaseWithContent(databaseId);
             var tables = database.Tables.ToList();
 
             var ctTask = Task.Run(() => GetScriptCreateTable(tables));

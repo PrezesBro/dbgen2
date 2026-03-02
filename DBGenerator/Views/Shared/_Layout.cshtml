@@ -1,4 +1,6 @@
 ﻿@using DBGenerator.Models.Ads
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
 <!DOCTYPE html>
 <html lang="pl" data-theme="dark">
 <head>
@@ -32,6 +34,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" href="https://geek-on.pl/webinary/" target="_blank">GeekON.tv</a>
                         </li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Admin" asp-action="Index">Bazy danych</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -40,21 +48,24 @@
     </header>
     <div class="container">
         <div class="row">
-            <div class="col-10">
+            <div class="col-lg-10">
                 <main role="main" class="pb-3">
                     @RenderBody()
                 </main>
             </div>
-            <div class="col-2">
+            <div class="col-lg-2">
                 @await Component.InvokeAsync("Ads", Position.Right)
             </div>
         </div>
     </div>
-    <div class="container">
-        <div class="row">
+    @if (!SignInManager.IsSignedIn(User))
+    {
+        <div class="container">
+            <div class="row">
             @await Component.InvokeAsync("Ads", Position.Bottom)
         </div>
-    </div>
+        </div>
+    }
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; @DateTime.Now.Year - <a href="https://geekon.edu.pl/" target="_blank">GeekON</a> - <a href="https://geekon.edu.pl/" target="_blank">Polityka prywatności</a>

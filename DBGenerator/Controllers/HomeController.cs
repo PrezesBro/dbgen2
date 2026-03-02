@@ -40,6 +40,7 @@ namespace DBGenerator.Controllers
 
                 newModel.SelectedEngine = model.SelectedEngine;
                 newModel.SelectedDatabase = model.SelectedDatabase;
+                newModel.YouTubeCode = GetYouTubeCode(model.SelectedEngine.Value);
 
                 return View("Index", newModel);
             }
@@ -52,6 +53,11 @@ namespace DBGenerator.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private string GetYouTubeCode(EngineType type)
+        {
+            return "WujjCSEJcDk";
         }
     }
 }

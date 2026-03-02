@@ -19,7 +19,7 @@ namespace DBGenerator.GenerateEngine
 
             var dbs = await _dataFacade.GetNewestDatabases();
             dbGenViewModel.EngineTypes = Enum.GetValues(typeof(EngineType)).Cast<EngineType>().Select(e => new SelectListItem(GetDisplayName(e), ((int)e).ToString()));
-            dbGenViewModel.Databases = dbs.Select(d => new SelectListItem(d.Name, d.Id.ToString()));
+            dbGenViewModel.Databases = dbs.Where(d => d.IsVisible).Select(d => new SelectListItem($"{d.Name} | wersja: {d.Version} | data: {d.CreateDate.ToString("dd-MM-yyyy")}", d.Id.ToString()));
 
             return dbGenViewModel;
         }

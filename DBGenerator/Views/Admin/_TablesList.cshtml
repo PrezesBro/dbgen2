@@ -1,0 +1,21 @@
+﻿@model List<Table>
+<hr/>
+<h2>Tabele:</h2>
+<table class="table table-striped table-hover text-white">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var table in Model)
+        {
+            <tr class="text-white">
+                <td>@table.Name</td>
+                <td><a asp-route-id="@table.Id" class="btn btn-success" asp-area="" asp-controller="Admin" asp-action="EditTable">Edytuj</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a class="btn btn-primary" asp-route-databaseId="@Model.First().Database.Id" asp-area="" asp-controller="Admin" asp-action="AddTable">Dodaj tabelę</a>

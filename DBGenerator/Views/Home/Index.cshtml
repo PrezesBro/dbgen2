@@ -45,8 +45,18 @@
     </div>
 
 </form>
+<hr />
+@if (!string.IsNullOrEmpty(Model.YouTubeCode))
+{
+    <h3>Jak wykorzystać skrypt:</h3>
+    <iframe style="width:100%; min-height:300px;" src="https://www.youtube.com/embed/@Model.YouTubeCode" allowfullscreen></iframe>
+}
+
+
 @if (!string.IsNullOrEmpty(Model.Script))
 {
+    
+
     <link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.min.css" rel="stylesheet" />
 
     <!-- Rdzeń + autoloader składni -->

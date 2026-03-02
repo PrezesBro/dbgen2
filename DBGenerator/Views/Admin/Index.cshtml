@@ -1,0 +1,48 @@
+﻿@model AdminViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Database Generator</h1>
+<a class="btn btn-primary" asp-controller="Admin" asp-action="Add">Dodaj bazę danych</a>
+<hr />
+<h2>Bazy danych:</h2>
+
+
+<table class="table table-striped table-hover text-white">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Opis</th>
+            <th>Wersja</th>
+            <th>Data utworzenia</th>
+            <th style="width:250px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var dat in Model.Databases)
+        {
+            <tr class="text-white">
+                <td>@dat.Name</td>
+                <td>@dat.Description</td>
+                <td>@dat.Version</td>
+                <td>@dat.CreateDate</td>
+                <td>
+                    <a asp-route-id="@dat.Id" class="btn btn-success mb-3" asp-area="" asp-controller="Admin" asp-action="Edit">Edytuj</a>
+                    <a asp-route-id="@dat.Id" class="btn btn-primary mb-3" asp-area="" asp-controller="Admin" asp-action="Copy">Utwórz kopię</a>
+                </td>
+            </tr>
+        }
+        
+    </tbody>
+</table>
+
+<hr/>
+<div class="row">
+    @foreach(var ad in Model.Ads)
+    {
+        <div class="col-lg-6 mb-3">
+            <partial name="_EditAds" model="@ad" />
+        </div>
+    }
+</div>
