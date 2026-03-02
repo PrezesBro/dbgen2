@@ -9,7 +9,7 @@ namespace DBGenerator.GenerateEngine
 
         public string ctOpen() => "(";
 
-        public string ctClose() => ")\n";
+        public string ctClose() => ");\n";
 
         public string ctId(string tableName) => $"\tId{tableName} NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,";
 
