@@ -1,37 +1,35 @@
-﻿using DBGenerator.Data;
-using DBGenerator.Models;
-
+﻿using DBGenerator.Models;
 
 namespace DBGenerator.GenerateEngine
 {
-    public class GenMSQQL : IGenData
+    public class GenPostgres : IGenData
     {
         public string ctCreateTable(string tableName) => $"CREATE TABLE {tableName}";
 
         public string ctOpen() => "(";
 
-        public string ctClose() => ")\n";
+        public string ctClose() => ");\n";
 
-        public string ctId(string tableName) => $"\tId{tableName} INT IDENTITY (1,1) PRIMARY KEY,";
+        public string ctId(string tableName) => $"\tId{tableName} INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,";
 
-       
+
         public string ctColumn(Column column) => $"\t{column.Name} {GetDataType(column)}";
 
-        public string iInsert(List<Column> columns, Table table) 
+        public string iInsert(List<Column> columns, Table table)
         {
             var col = String.Join(", ", columns.Select(c => c.Name));
             var result = $"INSERT INTO {table.Name} ({col})\n";
             result += "VALUES ";
             result += string.Join(",\n\t", GetValues(table.Datas.ToList(), table.Columns.ToList()));
-
+            result += ";";
             return result;
         }
 
         public string fkGet(string tableName, ForeignKey fk)
         {
             string result = $"ALTER TABLE {tableName}\n";
-            result += $"\tADD CONSTRAINT FK_{tableName}_{fk.TablePkName}\n";
-            result += $"\tFOREIGN KEY({fk.ColumnFkName}) REFERENCES {fk.TablePkName}(Id{fk.TablePkName})";
+            result += $"ADD CONSTRAINT FK_{tableName}_{fk.TablePkName}\n";
+            result += $"FOREIGN KEY({fk.ColumnFkName})\nREFERENCES {fk.TablePkName}(Id{fk.TablePkName});";
             return result;
         }
 
@@ -48,7 +46,7 @@ namespace DBGenerator.GenerateEngine
                 case DataType.Decimal:
                     return $"decimal({column.Precision})";
                 case DataType.Date:
-                    return "datetime";
+                    return "timestamp";
                 default:
                     return "varchar(max)";
             }

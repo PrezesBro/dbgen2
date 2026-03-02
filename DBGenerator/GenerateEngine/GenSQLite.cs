@@ -1,38 +1,33 @@
-﻿using DBGenerator.Data;
-using DBGenerator.Models;
-
+﻿using DBGenerator.Models;
 
 namespace DBGenerator.GenerateEngine
 {
-    public class GenMSQQL : IGenData
+    public class GenSQLite : IGenData
     {
         public string ctCreateTable(string tableName) => $"CREATE TABLE {tableName}";
 
         public string ctOpen() => "(";
 
-        public string ctClose() => ")\n";
+        public string ctClose() => ");\n";
 
-        public string ctId(string tableName) => $"\tId{tableName} INT IDENTITY (1,1) PRIMARY KEY,";
+        public string ctId(string tableName) => $"\tId{tableName} INTEGER PRIMARY KEY AUTOINCREMENT,";
 
-       
+
         public string ctColumn(Column column) => $"\t{column.Name} {GetDataType(column)}";
 
-        public string iInsert(List<Column> columns, Table table) 
+        public string iInsert(List<Column> columns, Table table)
         {
             var col = String.Join(", ", columns.Select(c => c.Name));
             var result = $"INSERT INTO {table.Name} ({col})\n";
             result += "VALUES ";
             result += string.Join(",\n\t", GetValues(table.Datas.ToList(), table.Columns.ToList()));
-
+            result += ";";
             return result;
         }
 
         public string fkGet(string tableName, ForeignKey fk)
         {
-            string result = $"ALTER TABLE {tableName}\n";
-            result += $"\tADD CONSTRAINT FK_{tableName}_{fk.TablePkName}\n";
-            result += $"\tFOREIGN KEY({fk.ColumnFkName}) REFERENCES {fk.TablePkName}(Id{fk.TablePkName})";
-            return result;
+            return $"\tFOREIGN KEY({fk.ColumnFkName}) REFERENCES {fk.TablePkName}(Id{fk.TablePkName})";
         }
 
 
@@ -42,15 +37,15 @@ namespace DBGenerator.GenerateEngine
             switch (column.DataType)
             {
                 case DataType.Text:
-                    return $"varchar({column.Precision})";
+                    return $"TEXT";
                 case DataType.Integer:
-                    return "int";
+                    return "INTEGER";
                 case DataType.Decimal:
-                    return $"decimal({column.Precision})";
+                    return $"REAL";
                 case DataType.Date:
-                    return "datetime";
+                    return "TEXT";
                 default:
-                    return "varchar(max)";
+                    return "TEXT";
             }
         }
 
@@ -88,21 +83,40 @@ namespace DBGenerator.GenerateEngine
 
         public string ctColumns(Table table)
         {
-            return string.Join(",\n", table.Columns.Select(c => ctColumn(c)));
+            return string.Join(",\n", GetColumRows(table));
+        }
+
+        private IEnumerable<string> GetColumRows(Table table)
+        {
+            foreach (var column in table.Columns)
+            {
+                yield return ctColumn(column);
+            }
+            foreach (var fk in table.ForeignKeys)
+            {
+                yield return fkGet(table.Name, fk);
+            }
+        }
+        public IEnumerable<string> GetForeignKeysWithComma(Table table)
+        {
+            var fks = table.ForeignKeys;
+            if (fks.Count == 0) yield break;
+
+            int index = 0;
+            foreach (var fk in fks)
+            {
+                var fkLine = fkGet(table.Name, fk);
+
+                if (fks.Count > 1 && index < fks.Count - 1)
+                    fkLine += ",";
+
+                yield return fkLine;
+                index++;
+            }
         }
         public IEnumerable<string> GetForeignKeys(List<Table> tables)
         {
-            foreach (var table in tables)
-            {
-                if (table.ForeignKeys.Count > 0)
-                {
-                    foreach (var fk in table.ForeignKeys)
-                    {
-                        yield return fkGet(table.Name, fk);
-                        yield return String.Empty;
-                    }
-                }
-            }
+            yield return string.Empty; 
         }
     }
 }

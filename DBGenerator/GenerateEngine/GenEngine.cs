@@ -1,13 +1,14 @@
 ﻿using DBGenerator.Data;
 using DBGenerator.Models;
 
+
 namespace DBGenerator.GenerateEngine
 {
     public class GenEngine
     {
         private readonly IGenData _gen;
         private readonly IDataFacade _data;
-        public GenEngine(IGenData gen, IDataFacade data) 
+        public GenEngine(IGenData gen, IDataFacade data)
         {
             _gen = gen;
             _data = data;
@@ -20,7 +21,7 @@ namespace DBGenerator.GenerateEngine
 
             var ctTask = Task.Run(() => GetScriptCreateTable(tables));
             var iTask = Task.Run(() => GetInsertScript(tables));
-            var fkTask = Task.Run(() => GetForeignKeys(tables));
+            var fkTask = Task.Run(() => _gen.GetForeignKeys(tables));
 
             var results = await Task.WhenAll(ctTask, iTask, fkTask);
 
@@ -30,17 +31,16 @@ namespace DBGenerator.GenerateEngine
         }
 
         private IEnumerable<string> GetScriptCreateTable(List<Table> tables)
-        {
+        {            
             foreach (var table in tables)
             {
                 yield return _gen.ctCreateTable(table.Name);
                 yield return _gen.ctOpen();
                 yield return _gen.ctId(table.Name);
 
-                foreach(var col in table.Columns)
-                {
-                    yield return _gen.ctColumn(col);
-                }
+              
+                yield return _gen.ctColumns(table);
+                      
                 yield return _gen.ctClose();
             }
             yield return "\n\n";
@@ -48,7 +48,8 @@ namespace DBGenerator.GenerateEngine
 
         private IEnumerable<string> GetInsertScript(List<Table> tables)
         {
-            foreach(var table in tables)
+           
+            foreach (var table in tables)
             {
                 var columns = table.Columns.ToList();
 
@@ -56,21 +57,6 @@ namespace DBGenerator.GenerateEngine
                 yield return String.Empty;
             }
             yield return "\n\n";
-        }
-
-        private IEnumerable<string> GetForeignKeys(List<Table> tables)
-        {
-            foreach(var table in tables)
-            {
-                if(table.ForeignKeys.Count > 0)
-                {
-                    foreach(var fk in table.ForeignKeys)
-                    {
-                        yield return _gen.fkGet(table.Name, fk);
-                        yield return String.Empty;
-                    }
-                }
-            }
         }
     }
 }
