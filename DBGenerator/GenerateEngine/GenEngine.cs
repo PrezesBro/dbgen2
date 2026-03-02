@@ -23,7 +23,7 @@ namespace DBGenerator.GenerateEngine
 
             result += String.Join("\n", GetScriptCreateTable(tables));
             result += String.Join("\n", GetInsertScript(tables));
-            result += String.Join("\n", GetForeignKeys(tables));
+            result += String.Join("\n", _gen.GetForeignKeys(tables));
 
             return result;
         }
@@ -35,7 +35,7 @@ namespace DBGenerator.GenerateEngine
 
             var ctTask = Task.Run(() => GetScriptCreateTable(tables));
             var iTask = Task.Run(() => GetInsertScript(tables));
-            var fkTask = Task.Run(() => GetForeignKeys(tables));
+            var fkTask = Task.Run(() => _gen.GetForeignKeys(tables));
 
             var results = await Task.WhenAll(ctTask, iTask, fkTask);
 
@@ -45,27 +45,16 @@ namespace DBGenerator.GenerateEngine
         }
 
         private IEnumerable<string> GetScriptCreateTable(List<Table> tables)
-        {
-            
-
+        {            
             foreach (var table in tables)
             {
                 yield return _gen.ctCreateTable(table.Name);
                 yield return _gen.ctOpen();
                 yield return _gen.ctId(table.Name);
 
-                if (!(_gen is GenSQLite))
-                {
-                    yield return _gen.ctColumnsDefinition(table.Columns);
-                }
-
-                if (_gen is GenSQLite sqlite) //dodaje klucze obce po CREATE i rozdziela przcinkiem pod podwójnymi kluczami
-                {
-                    foreach (var line in sqlite.ctColumnsAndForeignKeys(table))
-                    {
-                        yield return line;
-                    }
-                }
+              
+                yield return _gen.ctColumns(table);
+                      
                 yield return _gen.ctClose();
             }
             yield return "\n\n";
@@ -82,24 +71,6 @@ namespace DBGenerator.GenerateEngine
                 yield return String.Empty;
             }
             yield return "\n\n";
-        }
-
-        private IEnumerable<string> GetForeignKeys(List<Table> tables)
-        {
-            if (_gen is GenSQLite)
-                yield break;
-
-            foreach (var table in tables)
-            {
-                if (table.ForeignKeys.Count > 0)
-                {
-                    foreach (var fk in table.ForeignKeys)
-                    {
-                        yield return _gen.fkGet(table.Name, fk);
-                        yield return String.Empty;
-                    }
-                }
-            }
         }
     }
 }

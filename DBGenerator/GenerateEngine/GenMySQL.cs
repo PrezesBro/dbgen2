@@ -85,9 +85,23 @@ namespace DBGenerator.GenerateEngine
             }
         }
 
-        public string ctColumnsDefinition(IEnumerable<Column> columns)
+        public string ctColumns(Table table)
         {
-            return string.Join(",\n", columns.Select(c => ctColumn(c)));
+            return string.Join(",\n", table.Columns.Select(c => ctColumn(c)));
+        }
+        public IEnumerable<string> GetForeignKeys(List<Table> tables)
+        {
+            foreach (var table in tables)
+            {
+                if (table.ForeignKeys.Count > 0)
+                {
+                    foreach (var fk in table.ForeignKeys)
+                    {
+                        yield return fkGet(table.Name, fk);
+                        yield return String.Empty;
+                    }
+                }
+            }
         }
     }
 }

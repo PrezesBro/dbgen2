@@ -27,7 +27,7 @@ namespace DBGenerator.GenerateEngine
 
         public string fkGet(string tableName, ForeignKey fk)
         {
-            return $"\tFOREIGN KEY({fk.ColumnFkName}) REFERENCES {fk.TablePkName}(Id{fk.TablePkName})";                  
+            return $"\tFOREIGN KEY({fk.ColumnFkName}) REFERENCES {fk.TablePkName}(Id{fk.TablePkName})";
         }
 
 
@@ -81,11 +81,22 @@ namespace DBGenerator.GenerateEngine
             }
         }
 
-        public string ctColumnsDefinition(IEnumerable<Column> columns)
+        public string ctColumns(Table table)
         {
-            return string.Join("\n", columns.Select(c => ctColumn(c) + ","));
+            return string.Join(",\n", GetColumRows(table));
         }
 
+        private IEnumerable<string> GetColumRows(Table table)
+        {
+            foreach (var column in table.Columns)
+            {
+                yield return ctColumn(column);
+            }
+            foreach (var fk in table.ForeignKeys)
+            {
+                yield return fkGet(table.Name, fk);
+            }
+        }
         public IEnumerable<string> GetForeignKeysWithComma(Table table)
         {
             var fks = table.ForeignKeys;
@@ -103,28 +114,9 @@ namespace DBGenerator.GenerateEngine
                 index++;
             }
         }
-        //metoda która wstawia kolumny i klucze obce tak żeby przecinki się zgadzały 
-        public IEnumerable<string> ctColumnsAndForeignKeys(Table table)
+        public IEnumerable<string> GetForeignKeys(List<Table> tables)
         {
-            var colList = table.Columns.ToList();
-            var fkList = table.ForeignKeys.ToList();
-
-            int totalRows = colList.Count + fkList.Count; 
-            int index = 0;
-
-            foreach (var c in colList)
-            {
-                bool addComma = (index < totalRows - 1);
-                yield return ctColumn(c) + (addComma ? "," : "");
-                index++;
-            }
-
-            foreach (var fk in fkList)
-            {
-                bool addComma = (index < totalRows - 1);
-                yield return fkGet(table.Name, fk) + (addComma ? "," : "");
-                index++;
-            }
+            yield return string.Empty; 
         }
     }
 }
