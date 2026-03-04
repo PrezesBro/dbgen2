@@ -16,7 +16,7 @@
             <th>Opis</th>
             <th>Wersja</th>
             <th>Data utworzenia</th>
-            <th style="width:250px;"></th>
+            <th style="width:260px;"></th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +30,12 @@
                 <td>
                     <a asp-route-id="@dat.Id" class="btn btn-success mb-3" asp-area="" asp-controller="Admin" asp-action="Edit">Edytuj</a>
                     <a asp-route-id="@dat.Id" class="btn btn-primary mb-3" asp-area="" asp-controller="Admin" asp-action="Copy">Utwórz kopię</a>
+                    <form asp-controller="Admin" asp-action="Delete" method="post" style="display:inline; "onsubmit="return confirm('Czy na pewno chcesz usunąć?');">
+                        <input type="hidden" name="id" value="@dat.Id" />
+                        <button type="submit" class="btn btn-danger" style="margin-top:-15px;">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
                 </td>
             </tr>
         }

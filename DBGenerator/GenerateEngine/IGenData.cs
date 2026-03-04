@@ -17,3 +17,8 @@ namespace DBGenerator.GenerateEngine
         IEnumerable<string> GetForeignKeys(List<Table> tables);
     }
 }
+//dodać opcej usunięcia bd
+//edytuj -> edytuj dokończyć 3 przyciski 
+//edytuj kolumnty -> zmiena typu danych z rozwijanej listy i zmiana nazwy i prezycji 
+//edytuj dane ->  lista jak w notatniku w momencie zapisu usuwa dane i dodaje nowe 
+//klucze obce tabele i klucze: dwie listy rozwijane, lista kolumn tabeli którą edytuję, lista tabel 
