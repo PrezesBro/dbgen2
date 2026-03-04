@@ -183,5 +183,14 @@ namespace DBGenerator.Data
 
             await _db.SaveChangesAsync();
         }
+        public async Task Delete(int id)
+        {
+            var entity = await _db.Databases.FindAsync(id);
+            if (entity != null)
+            {
+                _db.Remove(entity);
+                await _db.SaveChangesAsync();
+            }
+        }
     }
 }

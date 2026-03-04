@@ -1,6 +1,7 @@
 ﻿using DBGenerator.Data;
 using DBGenerator.Models;
 using DBGenerator.Models.Ads;
+using Microsoft.EntityFrameworkCore;
 
 namespace DBGenerator.Admin
 {
@@ -55,6 +56,10 @@ namespace DBGenerator.Admin
         public async Task Save(Ads ads)
         {
             await _data.Save(ads);
+        }
+        public async Task DeleteDatabase(int id)
+        {
+            await _data.Delete(id);
         }
     }
 }

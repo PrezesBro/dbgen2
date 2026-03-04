@@ -19,5 +19,6 @@ namespace DBGenerator.Data
         Task<Table> GetTable(int id);
         Task Save(Table table);
         Task Save(Ads ads);
+        Task Delete(int id);
     }
 }

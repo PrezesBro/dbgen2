@@ -4,6 +4,7 @@ using DBGenerator.Models;
 using DBGenerator.Models.Ads;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace DBGenerator.Controllers
@@ -35,6 +36,12 @@ namespace DBGenerator.Controllers
         public async Task<IActionResult> Copy(int id)
         {
             await _adminAppService.Clone(id);
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _adminAppService.DeleteDatabase(id);
             return RedirectToAction("Index");
         }
 
