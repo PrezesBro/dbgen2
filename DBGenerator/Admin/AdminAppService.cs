@@ -61,5 +61,14 @@ namespace DBGenerator.Admin
         {
             await _data.Delete(id);
         }
+
+        public async Task<List<Column>> GetColumns(int tableId)
+        {
+            return await _data.GetColumn(tableId);
+        }
+        public async Task Save(List<Column> columns)
+        {
+            await _data.Save(columns); 
+        }
     }
 }

@@ -1,0 +1,69 @@
+﻿@model List<Column>
+
+<form asp-action="ColumnActions" method="post">
+	<div id="columnsContainer">
+
+
+		@* 	@foreach (var col in Model)*@
+		@for (int i = 0; i < Model.Count; i++)
+			{
+				
+			
+		 
+			@* 
+			<input type="hidden" asp-for="Model[i].Id" />
+			<input type="hidden" asp-for="@col.Table" />
+			<div class="row">
+				<div class="col-4 flex-colum d-flex">
+					<div class="form-group mb-3 mt-auto">
+						<label asp-for="@col.Name" class="form-label"></label>
+						<input asp-for="@col.Name" class="form-control" />
+						<span asp-validation-for="@col.Name" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-4 flex-colum d-flex">
+					<div class="mb-3 form-group mt-auto">
+						<label asp-for="@col.DataType" class="form-label"></label>
+						<select asp-for="@col.DataType" class="form-select">
+							<option value="">-- wybierz --</option>
+							@foreach (var db in col.DataTypes)
+							{
+								<option value="@db.Key">@db.Value</option>
+							}
+						</select>
+						<span asp-validation-for="@col.DataType" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-2 flex-colum d-flex">
+					<div class="form-group mb-3 mt-auto">
+						<label asp-for="@col.Precision" class="form-label"></label>
+						<input asp-for="@col.Precision" class="form-control" />
+						<span asp-validation-for="@col.Precision" class="text-danger"></span>
+					</div>
+				</div>
+				<div class="col-2 flex-colum d-flex h-100">
+					<div class="form-group mb-3 d-flex h-100">
+						<a asp-route-id="@col.Id" class="btn btn-danger mb-3 mt-auto"
+						   asp-area="" asp-controller="Admin"
+						   asp-action="DeleteColumn"><i class="bi bi-trash"></i></a>
+					</div>
+				</div>
+			</div> *@
+
+		}
+		
+	</div>
+
+	<div class="col-2 d-flex flex-column mb-3">
+		<div class="mt-auto text-end">
+			<button type="submit" class="btn btn-primary" name="actionType" value="add">Dodaj kolumnę</button>
+		</div>
+	</div>
+
+	<div class="col-2 d-flex flex-column mb-3">
+		<div class="mt-auto text-end">
+			<button type="submit" class="btn btn-success mt-3" name="actionType" value="save">Zapisz wszystko</button>
+		</div>
+	</div>
+</form>
+

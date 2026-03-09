@@ -1,0 +1,48 @@
+﻿@model Column 
+
+<input type="hidden" asp-for="Id"/>
+<input type="hidden" asp-for="Table"/>
+<div class="row">
+	<div class="col-4 flex-colum d-flex">
+		<div class="form-group mb-3 mt-auto">
+			<label asp-for="Name" class="form-label"></label>
+			<input asp-for="Name" class="form-control" />
+			<span asp-validation-for="Name" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="col-4 flex-colum d-flex">
+		<div class="mb-3 form-group mt-auto">
+			<label asp-for="DataType" class="form-label"></label>
+			<select asp-for="DataType" class="form-select">
+				<option value="">-- wybierz --</option>
+				@foreach (var db in Model.DataTypes)
+				{
+					<option value="@db.Key">@db.Value</option>
+				}
+			</select>
+			<span asp-validation-for="DataType" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="col-2 flex-colum d-flex">
+		<div class="form-group mb-3 mt-auto">
+			<label asp-for="Precision" class="form-label"></label>
+			<input asp-for="Precision" class="form-control" />
+			<span asp-validation-for="Precision" class="text-danger"></span>
+		</div>
+	</div>
+	<div class="col-2 flex-colum d-flex h-100"> 
+		<div class="form-group mb-3 d-flex h-100">
+			<a asp-route-id="@Model.Id" class="btn btn-danger mb-3 mt-auto"
+			   asp-area="" asp-controller="Admin"
+			   asp-action="DeleteColumn"><i class="bi bi-trash"></i></a>
+		</div>		
+	</div>
+</div>
+
+@* <div class="col-2 d-flex flex-column mb-3">
+	<div class="mt-auto text-end">
+		<form asp-controller="Admin" asp-action="AddColumn" method="post">
+			<button type="submit" class="btn btn-primary">Dodaj kolumnę</button>
+		</form>
+	</div>
+</div> *@

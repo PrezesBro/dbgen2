@@ -5,6 +5,7 @@ using DBGenerator.Models.Ads;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace DBGenerator.Controllers
@@ -14,12 +15,12 @@ namespace DBGenerator.Controllers
     {
         private IAdminAppService _adminAppService;
 
-        public AdminController(IAdminAppService adminAppService) 
+        public AdminController(IAdminAppService adminAppService)
         {
             _adminAppService = adminAppService;
         }
 
-        public async Task<IActionResult> Index() 
+        public async Task<IActionResult> Index()
         {
             var model = new AdminViewModel();
             model.Databases = await _adminAppService.GetDatabases();
@@ -38,7 +39,6 @@ namespace DBGenerator.Controllers
             await _adminAppService.Clone(id);
             return RedirectToAction("Index");
         }
-        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             await _adminAppService.DeleteDatabase(id);
@@ -46,7 +46,7 @@ namespace DBGenerator.Controllers
         }
 
         [HttpGet]
-        public IActionResult Add() 
+        public IActionResult Add()
         {
             var model = new Database();
             model.CreateDate = DateTime.Now.Date;
@@ -88,6 +88,55 @@ namespace DBGenerator.Controllers
         {
             await _adminAppService.Save(ads);
             return RedirectToAction("Index");
+        }
+        
+        public async Task<IActionResult> EditColumn(int tableId)
+        {
+            var model = await _adminAppService.GetColumns(tableId);
+            if (model.Count == 0)
+            {
+                model.Add(new Column
+                {
+                    Table = new Table
+                    {
+                        Id = tableId
+                    }
+                });  
+            }
+            return View(model); 
+            //dodać kolumny i usunąć 
+            //dodać przycisk zapisz 
+        }
+        [HttpPost]
+        public async Task<IActionResult> ColumnActions(List<Column> model, string actionType)
+        {
+            if (actionType == "add")
+            {
+                model.Add(new Column());               
+            }
+            else if(actionType == "save")
+            {
+                await _adminAppService.Save(model);
+                return RedirectToAction("EditTable", model[0].Table.Id); 
+            }
+
+            return RedirectToAction("EditColumn", model);
+        }
+
+
+
+
+        public async Task<IActionResult> DeleteColumn(int tableId, int columnId)
+        {
+            var model = await _adminAppService.GetColumns(tableId);
+            var columnToRemove = model.FirstOrDefault(c => c.Id == columnId);
+
+            if (columnToRemove != null)
+            {
+                model.Remove(columnToRemove);
+            }
+            
+            return View("EditColumn", model);
         }
     }
 }

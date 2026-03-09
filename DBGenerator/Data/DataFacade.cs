@@ -1,6 +1,7 @@
 ﻿using DBGenerator.Models;
 using DBGenerator.Models.Ads;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using System.Runtime.CompilerServices;
 
 namespace DBGenerator.Data
@@ -191,6 +192,31 @@ namespace DBGenerator.Data
                 _db.Remove(entity);
                 await _db.SaveChangesAsync();
             }
+        }
+
+        public async Task<List<Column>> GetColumn(int tableId)
+        {
+            return await _db.Columns.Where(c => c.Table.Id == tableId).ToListAsync(); 
+        }
+        public async Task Save(List<Column> columns)
+        {
+            var table = _db.Tables.FirstOrDefault(t => t.Id == columns[0].Table.Id);
+            foreach (var col in table.Columns)
+            {
+                var newCol = columns.FirstOrDefault(c => c.Id == col.Id);
+                if (newCol == null)
+                {
+                    table.Columns.Remove(col); 
+                }
+                else
+                {
+                    col.Name = newCol.Name;
+                    col.Precision = newCol.Precision;
+                    col.DataType = newCol.DataType;
+                }
+            }
+            table.Columns.AddRange(columns.Where(c => c.Id == 0));
+            await _db.SaveChangesAsync();
         }
     }
 }

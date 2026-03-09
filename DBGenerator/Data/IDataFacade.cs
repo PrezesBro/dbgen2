@@ -20,5 +20,7 @@ namespace DBGenerator.Data
         Task Save(Table table);
         Task Save(Ads ads);
         Task Delete(int id);
+        Task<List<Column>> GetColumn(int tableId);
+        Task Save(List<Column> columns);
     }
 }
