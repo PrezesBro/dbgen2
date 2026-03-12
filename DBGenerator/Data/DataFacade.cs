@@ -1,5 +1,6 @@
 ﻿using DBGenerator.Models;
 using DBGenerator.Models.Ads;
+using DBGenerator.Models.Blog;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 
@@ -46,7 +47,7 @@ namespace DBGenerator.Data
         }
 
 
-        public Task<List<Ads>> GetAds(Position position, bool onlyVisible, bool order)
+        public Task<List<Ads>> GetAds(Models.Ads.Position position, bool onlyVisible, bool order)
         {
             var result = _db.Ads.Where(a => a.Position == position);
 
@@ -182,6 +183,44 @@ namespace DBGenerator.Data
             adsOld.IsVisible = ads.IsVisible;
 
             await _db.SaveChangesAsync();
+        }
+
+        public async Task<List<Post>> GetAllPosts()
+        {
+            return await _db.Posts.ToListAsync();
+        }
+
+        public async Task<Post> GetPost(int postId)
+        {
+            return await _db.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+        }
+
+        public async Task<Post> GetMainPost()
+        {
+            return await _db.Posts.Where(p => p.PublishDate < DateTime.Now && p.Position == Models.Blog.Position.Main && p.Status == Status.Public).OrderByDescending(p => p.PublishDate).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Post>> GetPromoPosts()
+        {
+            return await _db.Posts.Where(p => p.PublishDate < DateTime.Now && p.Position == Models.Blog.Position.Promo && p.Status == Status.Public).OrderByDescending(p => p.PublishDate).Take(3).ToListAsync();
+        }
+
+        public async Task<List<Post>> GetPosts(int page, int size)
+        {
+            return await _db.Posts.
+                Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountPosts()
+        {
+            return await _db.Posts.Where(p => p.PublishDate < DateTime.Now && p.Status == Status.Public).CountAsync();
+        }
+
+        public async Task<Post> GetPost(string name)
+        {
+            return await _db.Posts.Include(p => p.Elements).FirstOrDefaultAsync(p => p.NameUrl == name);
         }
     }
 }

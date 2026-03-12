@@ -19,5 +19,12 @@ namespace DBGenerator.Data
         Task<Table> GetTable(int id);
         Task Save(Table table);
         Task Save(Ads ads);
+        Task<List<Models.Blog.Post>> GetPosts(int page, int size);
+        Task<List<Models.Blog.Post>> GetPromoPosts();
+        Task<Models.Blog.Post> GetMainPost();
+        Task<Models.Blog.Post> GetPost(int postId);
+        Task<List<Models.Blog.Post>> GetAllPosts();
+        Task<int> CountPosts();
+        Task<Models.Blog.Post> GetPost(string name);
     }
 }

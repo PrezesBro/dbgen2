@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace DBGenerator.Controllers
 {
     [Authorize]
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
         private IAdminAppService _adminAppService;
 

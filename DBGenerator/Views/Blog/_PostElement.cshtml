@@ -1,0 +1,28 @@
+﻿@using DBGenerator.Models.Blog
+@model PostElement
+
+<div class="row post">
+    @switch (Model.Type)
+    {
+        case ElementType.Title:
+            @Html.Raw($"<h{Model.Content1}>{Model.Content2}</h{Model.Content1}>")
+            break;
+        case ElementType.Paragraph:
+            <p>@Html.Raw(Model.Content1)</p>
+            break;
+        case ElementType.Image:
+            <img src="@Model.Content1"/>
+            break;
+        case ElementType.YouTubeVideo:
+            <iframe src="https://www.youtube.com/embed/@Model.Content1" allowfullscreen></iframe>
+            break;
+        case ElementType.LeftImage:
+            <div class="col-6"><img src="@Model.Content1" /></div>
+            <div class="col-6"><p>@Html.Raw(Model.Content2)</p></div>
+            break;
+        case ElementType.RightImage:
+            <div class="col-6"><p>@Html.Raw(Model.Content2)</p></div>
+            <div class="col-6"><img src="@Model.Content1" /></div>
+            break;
+    }
+</div>

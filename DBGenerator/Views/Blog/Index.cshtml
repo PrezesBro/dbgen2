@@ -1,0 +1,61 @@
+﻿@model DBGenerator.Models.Blog.BlogViewModel
+
+<div class="row">
+    <div class="col-lg-6 blog-tile">
+        <div class="blog-content">
+            <img src="@Model.MainPost.ImageUrl"/>
+            <h2>@Model.MainPost.Title</h2>
+            <p>@Model.MainPost.Description</p>
+            <a class="btn btn-primary" asp-controller="Blog" asp-action="ShowPost" asp-route-post_name="@Model.MainPost.NameUrl">Czytaj</a>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        @for (int i = 0; i < (Model.PromoPosts.Count > 3 ? 3 : Model.PromoPosts.Count); i++)
+        {
+            <div class="row blog-tile blog-content">
+                <div class="col-4 blog-tile">
+                    <img src="@Model.PromoPosts[i].ImageUrl"/>
+                </div>
+                <div class="col-8">
+                    <h3>@Model.PromoPosts[i].Title</h3>
+                    <p>@Model.PromoPosts[i].Description</p>
+                    <a class="btn btn-primary" asp-controller="Blog" asp-action="ShowPost" asp-route-post_name="@Model.PromoPosts[i].NameUrl">Czytaj</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="row">
+    @foreach(var post in Model.Posts.Posts)
+    {
+        <div class="col-md-4 blog-tile">
+            <div class="blog-content">
+            <img src="@post.ImageUrl"/>
+            <h2>@post.Title</h2>
+            <p>@post.Description</p>
+                <a class="btn btn-primary" asp-controller="Blog" asp-action="ShowPost" asp-route-post_name="@post.NameUrl">Czytaj</a>
+        </div>
+        </div>
+    }
+</div>
+<div class="row">
+    <div class="col-12 align-content-center">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-controller="Blog">Najnowsze</a></li>
+                @foreach(var p in Model.Posts.PageList)
+                {
+                    @if(p == 0)
+                    {
+                        <li class="page-item"><p class="page-link">...</p></li>
+                    }
+                    else
+                    {
+                        <li class="page-item"><a class="page-link" asp-action="Index" asp-controller="Blog" asp-route-p="@p">@p</a></li>
+                    }
+                }
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-controller="Blog" asp-route-p="@Model.Posts.TotalPages">Najstarsze</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

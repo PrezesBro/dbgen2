@@ -17,23 +17,7 @@ html {
   min-height: 100%;
 }
 
-body {
-    margin-bottom: 60px;
-    background-color: var(--bg);
-    color: var(--fg);
-}
 
-
-:root[data-theme="dark"] {
-    --bg: #0f1115;
-    --fg: #e5e7eb;
-    --card-bg: #141821;
-    --border: #2a3140;
-}
-
-header {
-    background: #0f1115;
-}
 
 .code{
     max-height: 500px;
@@ -45,6 +29,10 @@ header {
     margin-bottom: 15px;
     border-radius: 5px;
     height:95%;
+}
+
+a {
+    text-decoration: none;
 }
 
 .ads-image{
@@ -76,4 +64,47 @@ header {
 .ads-price-old{
     text-decoration: line-through;
     color: red;
+}
+
+.blog-tile {
+    padding: unset;
+}
+
+.blog-content {
+    margin: 10px;
+    background-color: #10194B;
+    border-radius: 5px;
+}
+
+    .blog-content h2 {
+        padding: 10px;
+    }
+
+    .blog-content p {
+        padding: 10px;
+    }
+
+    .blog-content a {
+        margin: 10px;
+        width:auto;
+    }
+
+.blog-tile img {
+    width: 100%;
+    padding: unset!important;
+    margin: unset!important;
+}
+
+.post img{
+    width: 100%;
+}
+
+.post{
+    margin-bottom: 10px;
+}
+
+.post iframe{
+    max-width: 540px;
+    margin: auto;
+    
 }

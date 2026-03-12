@@ -1,4 +1,5 @@
 using DBGenerator.Admin;
+using DBGenerator.Blog;
 using DBGenerator.Data;
 using DBGenerator.GenerateEngine;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +18,7 @@ builder.Services.AddScoped<IDataFacade, DataFacade>();
 builder.Services.AddScoped<IDBGenAppService, DBGenAppService>();
 builder.Services.AddScoped<IAdminAppService, AdminAppService>();
 builder.Services.AddScoped<IGenDataFactory, GenDataFactory>();
+builder.Services.AddScoped<IBlogAppService, BlogAppService>();
 
 builder.Services.AddControllersWithViews();
 
@@ -41,6 +43,15 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+
+app.MapControllerRoute(
+    name: "blog_all",
+    pattern: "wiedza",
+    defaults: new { controller = "Blog", action = "Index" });
+app.MapControllerRoute(
+    name: "blog_post",
+    pattern: "wiedza/{post_name}",
+    defaults: new { controller = "Blog", action = "ShowPost" });
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

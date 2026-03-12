@@ -1,0 +1,11 @@
+﻿@using DBGenerator.Models.Blog
+@model Post
+
+<img src="@Model.ImageUrl"/>
+<h1>@Model.Title</h1>
+<p>@Model.PublishDate.ToString("d MMMM yyyy")</p>
+
+@foreach(var el in Model.Elements)
+{
+    <partial name="_PostElement" model="@el" />
+}
