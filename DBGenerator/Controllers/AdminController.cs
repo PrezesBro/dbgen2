@@ -5,6 +5,7 @@ using DBGenerator.Models.Ads;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -90,16 +91,16 @@ namespace DBGenerator.Controllers
             return RedirectToAction("Index");
         }
         
-        public async Task<IActionResult> EditColumn(int tableId)
+        public async Task<IActionResult> EditColumn(int id) //zmiana z talbeId na id żeby widok przekazał dane
         {
-            var model = await _adminAppService.GetColumns(tableId);
+            var model = await _adminAppService.GetColumns(id);
             if (model.Count == 0)
             {
                 model.Add(new Column
                 {
                     Table = new Table
                     {
-                        Id = tableId
+                        Id = id
                     }
                 });  
             }
@@ -124,8 +125,6 @@ namespace DBGenerator.Controllers
         }
 
 
-
-
         public async Task<IActionResult> DeleteColumn(int tableId, int columnId)
         {
             var model = await _adminAppService.GetColumns(tableId);
@@ -137,6 +136,24 @@ namespace DBGenerator.Controllers
             }
             
             return View("EditColumn", model);
+        }
+
+        public  IActionResult EditData(int id)
+        {
+            var values = _adminAppService.GetValues(id);
+            ViewBag.TableId = id;
+            return View("EditData", values); 
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveValues(int tableId, string text)
+        {
+            
+            await _adminAppService.DeleteTableValuesAsync(tableId);
+         
+            await _adminAppService.SaveValuesAsync(tableId, text);
+
+
+            return RedirectToAction("EditTable", new {id = tableId }); //jak było redirect to EditData to wyrzucało wyjątek null w AddTable View że model.id =null
         }
     }
 }

@@ -17,5 +17,8 @@ namespace DBGenerator.Admin
         Task DeleteDatabase(int id);
         Task<List<Column>> GetColumns(int tableId);
         Task Save(List<Column> columns);
+        string GetValues(int tableId);
+        Task DeleteTableValuesAsync(int tableId);
+        Task SaveValuesAsync(int tableId, string text);
     }
 }

@@ -22,5 +22,9 @@ namespace DBGenerator.Data
         Task Delete(int id);
         Task<List<Column>> GetColumn(int tableId);
         Task Save(List<Column> columns);
+        string GetValues(int tableId);
+        Task DeleteTableValues(int tableId);
+        void AddData(Datas data);
+        Task SaveChangesAsync();
     }
 }

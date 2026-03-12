@@ -218,5 +218,31 @@ namespace DBGenerator.Data
             table.Columns.AddRange(columns.Where(c => c.Id == 0));
             await _db.SaveChangesAsync();
         }
+
+        public string GetValues(int tableId)
+        {
+            var datas = _db.Datas
+                    .Where(d => d.Table.Id == tableId)   
+                   .Select(d => d.Value)               
+                   .ToList();
+            string values = string.Join("\n", datas);
+            return values;  
+        }
+        public async Task DeleteTableValues(int tableId)
+        {
+            var recordToDelete = _db.Datas.Where(d => d.Table.Id == tableId);
+            _db.Datas.RemoveRange(recordToDelete);
+            await _db.SaveChangesAsync(); 
+        }
+      
+
+        public void AddData(Datas data)
+        {
+            _db.Datas.Add(data);
+        }
+        public async Task SaveChangesAsync()
+        {
+            await _db.SaveChangesAsync(); // zapis wszystkich zmian naraz
+        }
     }
 }

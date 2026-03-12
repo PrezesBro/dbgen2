@@ -1,0 +1,10 @@
+﻿@model string
+@{
+    int tableId = ViewBag.TableId;
+}
+
+<form asp-action="SaveValues" asp-route-tableId="@tableId" method="post">
+    <textarea name="text" rows="20" cols="80">@Model</textarea>
+    <input type="hidden" name="tableId" value="@tableId" />
+    <button type="submit">Zapisz</button>
+</form>

@@ -1,4 +1,5 @@
 ﻿using DBGenerator.Data;
+using DBGenerator.Data.Migrations;
 using DBGenerator.Models;
 using DBGenerator.Models.Ads;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace DBGenerator.Admin
     public class AdminAppService : IAdminAppService
     {
         IDataFacade _data;
-        public AdminAppService(IDataFacade data) 
+        public AdminAppService(IDataFacade data)
         {
             _data = data;
         }
@@ -68,7 +69,43 @@ namespace DBGenerator.Admin
         }
         public async Task Save(List<Column> columns)
         {
-            await _data.Save(columns); 
+            await _data.Save(columns);
+        }
+
+
+        public string GetValues(int tableId)
+        {
+            var values = _data.GetValues(tableId);
+            return values;
+        }
+
+        public async Task DeleteTableValuesAsync(int tableId)
+        {
+            await _data.DeleteTableValues(tableId);
+        }
+        public async Task SaveValuesAsync(int tableId, string text)
+        {
+            var table = await _data.GetTable(tableId);
+
+            if (table == null)
+                throw new InvalidOperationException($"Tabela o Id={tableId} nie istnieje");
+            
+            var lines = text.Split('\n');         
+            foreach (var line in lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    var data = new Datas
+                    {
+                        Table = table,
+                        Value = line.Trim()
+                    };
+
+                   
+                    _data.AddData(data);
+                }
+            }
+            await _data.SaveChangesAsync();
         }
     }
 }
