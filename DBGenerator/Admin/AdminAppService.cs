@@ -107,5 +107,28 @@ namespace DBGenerator.Admin
             }
             await _data.SaveChangesAsync();
         }
+
+        public async Task Save(List<ForeignKey> foreignKeys)
+        {
+            await _data.Save(foreignKeys);
+        }
+
+        public async Task<ForeignKeysViewModel> GetForeignKeysViewModel(int tableId)
+        {
+            return new ForeignKeysViewModel
+            {
+                ForeignKeys = await _data.GetForeignKeys(tableId),
+                Tables = await _data.GetTableNames(tableId),
+                Columnts = await _data.GetColumnNames(tableId)
+            };
+        }
+
+        public async Task<ForeignKeysViewModel> FillSelectLists(ForeignKeysViewModel fkvm)
+        {
+            var tableId = fkvm.ForeignKeys[0].Table.Id;
+            fkvm.Tables = await _data.GetTableNames(tableId);
+            fkvm.Columnts = await _data.GetColumnNames(tableId);
+            return fkvm;
+        }
     }
 }

@@ -244,5 +244,41 @@ namespace DBGenerator.Data
         {
             await _db.SaveChangesAsync(); // zapis wszystkich zmian naraz
         }
+
+        public async Task Save(List<ForeignKey> foreignKeys)
+        {
+            var table = _db.Tables.Include(t => t.ForeignKeys).FirstOrDefault(t => t.Id == foreignKeys[0].Table.Id);
+            foreach (var fk in table.ForeignKeys)
+            {
+                var newCol = foreignKeys.FirstOrDefault(f => f.Id == fk.Id);
+                if (newCol == null)
+                {
+                    table.ForeignKeys.Remove(fk);
+                }
+                else
+                {
+                    fk.ColumnFkName = newCol.ColumnFkName;
+                    fk.TablePkName = newCol.TablePkName;
+                }
+            }
+            table.ForeignKeys.AddRange(foreignKeys.Where(f => f.Id == 0));
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task<List<ForeignKey>> GetForeignKeys(int tableId)
+        {
+            return await _db.ForeignKeys.Where(f => f.Table.Id == tableId).ToListAsync();
+        }
+
+        public async Task<List<string>> GetTableNames(int tableId)
+        {
+            return await _db.Tables.Where(t => t.Database.Tables.Any(t => t.Id == tableId)).Select(t => t.Name).ToListAsync();
+        }
+
+        public async Task<List<string>> GetColumnNames(int tableId)
+        {
+            var tab = await _db.Tables.Include(c => c.Columns).FirstAsync(t => t.Id == tableId);
+            return tab.Columns.Select(c => c.Name).ToList();
+        }
     }
 }

@@ -155,5 +155,29 @@ namespace DBGenerator.Controllers
 
             return RedirectToAction("EditTable", new {id = tableId }); //jak było redirect to EditData to wyrzucało wyjątek null w AddTable View że model.id =null
         }
+
+        public async Task<IActionResult> EditForeignKeys(int id)
+        {
+            var model = await _adminAppService.GetForeignKeysViewModel(id);
+            if(model.ForeignKeys.Count == 0)
+            {
+                model.ForeignKeys.Add(new ForeignKey { Table = new Table { Id = id } });
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForeignKeysAction(ForeignKeysViewModel model, string actionType)
+        {
+            if(actionType == "add")
+            {
+                model.ForeignKeys.Add(new ForeignKey());
+                await _adminAppService.FillSelectLists(model);
+                return View("EditForeignKeys", model);
+            }
+            await _adminAppService.Save(model.ForeignKeys);
+            return RedirectToAction("EditTable", new { id = model.ForeignKeys[0].Table.Id });
+        }
     }
 }

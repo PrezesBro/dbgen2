@@ -20,5 +20,8 @@ namespace DBGenerator.Admin
         string GetValues(int tableId);
         Task DeleteTableValuesAsync(int tableId);
         Task SaveValuesAsync(int tableId, string text);
+        Task Save(List<ForeignKey> foreignKeys);
+        Task<ForeignKeysViewModel> GetForeignKeysViewModel(int tableId);
+        Task<ForeignKeysViewModel> FillSelectLists(ForeignKeysViewModel fkvm);
     }
 }

@@ -26,5 +26,9 @@ namespace DBGenerator.Data
         Task DeleteTableValues(int tableId);
         void AddData(Datas data);
         Task SaveChangesAsync();
+        Task Save(List<ForeignKey> foreignKeys);
+        Task<List<ForeignKey>> GetForeignKeys(int tableId);
+        Task<List<string>> GetTableNames(int tableId);
+        Task<List<string>> GetColumnNames(int tableId);
     }
 }

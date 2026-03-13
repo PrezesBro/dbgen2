@@ -18,5 +18,6 @@ namespace DBGenerator.Data
         public DbSet<Column> Columns { get; set; }
         public DbSet<Datas> Datas { get; set; }
         public DbSet<Ads> Ads { get; set; }
+        public DbSet<ForeignKey> ForeignKeys { get; set; }
     }
 }
