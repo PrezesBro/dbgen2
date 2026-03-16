@@ -25,6 +25,8 @@ namespace DBGenerator.Data
         Task<Models.Blog.Post> GetPost(int postId);
         Task<List<Models.Blog.Post>> GetAllPosts();
         Task<int> CountPosts();
+        Task<Models.Blog.Post> GetPostWithElements(string name);
         Task<Models.Blog.Post> GetPost(string name);
+        Task<List<Models.Blog.PostElement>> GetPostElements(int postId);
     }
 }

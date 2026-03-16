@@ -218,9 +218,19 @@ namespace DBGenerator.Data
             return await _db.Posts.Where(p => p.PublishDate < DateTime.Now && p.Status == Status.Public).CountAsync();
         }
 
-        public async Task<Post> GetPost(string name)
+        public async Task<Post> GetPostWithElements(string name)
         {
             return await _db.Posts.Include(p => p.Elements).FirstOrDefaultAsync(p => p.NameUrl == name);
+        }
+
+        public async Task<Post> GetPost(string name)
+        {
+            return await _db.Posts.FirstOrDefaultAsync(p => p.NameUrl == name);
+        }
+
+        public async Task<List<PostElement>> GetPostElements(int postId)
+        {
+            return await _db.PostElements.Where(x => x.Id == postId).ToListAsync(); 
         }
     }
 }
