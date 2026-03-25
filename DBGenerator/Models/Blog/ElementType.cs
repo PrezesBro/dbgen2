@@ -2,7 +2,7 @@
 {
     public enum ElementType
     {
-        Title,
+        Title, 
         Paragraph,
         Image,
         LeftImage,

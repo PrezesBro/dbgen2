@@ -1,30 +1,34 @@
-﻿@model DBGenerator.Models.Blog.Post
+﻿@model DBGenerator.Models.Blog.EditPostViewModel
 @using DBGenerator.Models.Blog
+
+@await Html.PartialAsync("_EditPostNavBar", Model.Post)
+
+
 
 <div style="max-width:700px; margin:20px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
 	<h3>Edytuj post</h3>
-	<form action="/Blog/SavePostChanges" method="post">
-		<input type="hidden" name="Id" value="@Model.Id" />
-		<input type="hidden" name="NameUrl" value="@Model.NameUrl" />
+	<form asp-action="SavePostChanges" method="post">		
+		<input type="hidden" asp-for="Post.Id" />
+		<input type="hidden"asp-for="Post.NameUrl"/>
 
 		<div style="margin-bottom:15px;">
 			<label>Title</label>
-			<input type="text" name="Title" value="@Model.Title" class="form-control" />
+			<input type="text" name="Title" value="@Model.Post.Title" class="form-control" />
 		</div>
 
 		<div style="margin-bottom:15px;">
 			<label>Description</label>
-			<textarea name="Description" class="form-control" rows="3">@Model.Description</textarea>
+			<textarea name="Description" class="form-control" rows="3">@Model.Post.Description</textarea>
 		</div>
 
 		<div style="margin-bottom:15px;">
 			<label>Tags</label>
-			<input type="text" name="Tags" value="@Model.Tags" class="form-control" />
+			<input type="text" name="Tags" value="@Model.Post.Tags" class="form-control" />
 		</div>
 
 		<div style="margin-bottom:15px;">
 			<label>Publish Date</label>
-			<input type="datetime-local" name="PublishDate" value="@Model.PublishDate.ToString("yyyy-MM-ddTHH:mm")" class="form-control" />
+			<input type="datetime-local" name="PublishDate" value="@Model.Post.PublishDate.ToString("yyyy-MM-ddTHH:mm")" class="form-control" />
 		</div>
 
 		<div style="margin-bottom:15px;">
@@ -32,7 +36,7 @@
 			<select name="Position" class="form-select">
 				@foreach (Position pos in Enum.GetValues(typeof(Position)))
 				{
-					if (Model.Position == pos)
+					if (@Model.Post.Position == pos)
 					{
 						<option value="@pos" selected>@pos</option>
 					}
@@ -49,7 +53,7 @@
 			<select name="Status" class="form-select">
 				@foreach (Status st in Enum.GetValues(typeof(Status)))
 				{
-					if (Model.Status == st)
+					if (@Model.Post.Status == st)
 					{
 						<option value="@st" selected>@st</option>
 					}
@@ -63,104 +67,100 @@
 
 		<div style="margin-bottom:15px;">
 			<label>Image URL</label>
-			<input type="text" name="ImageUrl" value="@Model.ImageUrl" class="form-control" />
+			<input type="text" name="ImageUrl" value="@Model.Post.ImageUrl" class="form-control" />
 		</div>
 
 		<div style="margin-bottom:10px;">
-			<img src="@Model.ImageUrl" style="width:50%; border-radius:5px;" />
+			<img src="@Model.Post.ImageUrl" style="width:50%; border-radius:5px;" />
 		</div>
-	
+
 		<div style="text-align:right;">
-			<button type="submit" class="btn btn-light">Zapisz</button>
+			<button type="submit"
+					class="btn btn-light btn-sm shadow-sm text-dark fw-bold"
+					style="min-width:80px;">
+				Zapisz
+			</button>
 		</div>
 	</form>
 </div>
 
 
 
-<div style="max-width:700px; margin:20px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
+<div style="max-width:700px; margin:20px auto 50px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
 	<h3>Elementy posta</h3>
 
-	<form asp-action="SaveElements" method="post">
-		@for (int i = 0; i < Model.Elements.Count; i++)
-		{
-			<p>Id: @Model.Elements[i].Id</p>
+	<form asp-action="SaveElementsChanges" method="post">
+		<input type="hidden" asp-for="Post.Id" />
+		<input type="hidden" asp-for="Post.Title"/>
+		<input type="hidden" asp-for="Post.NameUrl"/>
+		<input type="hidden" asp-for="Post.Description"/>
+		<input type="hidden" asp-for="Post.Tags"/>
+		<input type="hidden" asp-for="Post.PublishDate"/>
+		<input type="hidden" asp-for="Post.Position"/>
+		<input type="hidden" asp-for="Post.Status"/>
+		<input type="hidden" asp-for="Post.ImageUrl"/>
+		<input type="hidden" asp-for="Post.Category"/>
+		<input type="hidden" asp-for="Post.Metas"/>
+		@for (int i = 0; i < Model.PostElements.Count; i++)
+		{			
 			<div style="background-color:#007bff; padding:10px; margin-bottom:10px; border-radius:5px;">
-				<input type="hidden" asp-for="Elements[i].Id" />
+				<input type="hidden" asp-for="PostElements[i].PostElement.Id" />
+				<input type="hidden" asp-for="PostElements[i].PostElement.Post.Id" />
 
 				<label>Type:</label>
-				<input type="text" asp-for="Elements[i].Type" class="form-control" style="margin-bottom:5px;" />
+				<select name="PostElements[@i].PostElement.Type" class="form-select" style="margin-bottom:5px;">
+					@foreach (ElementType tp in Enum.GetValues(typeof(ElementType)))
+					{
+						if (Model.PostElements[i].PostElement.Type == tp)
+						{
+							<option value="@tp" selected>@tp</option>
+						}
+						else
+						{
+							<option value="@tp">@tp</option>
+						}
+					}
+				</select>
 
 				<label>Content1:</label>
-				<input type="text" asp-for="Elements[i].Content1" class="form-control" style="margin-bottom:5px;" />
+				<input type="text" asp-for="PostElements[i].PostElement.Content1" class="form-control" style="margin-bottom:5px;" />
+				<span asp-validation-for="PostElements[i].PostElement.Content1" class="text-danger"></span>
+				<span asp-validation-for="PostElements[i].PostElement.Content1" class="text-danger"></span>
 
-				<label>Content2:</label>
-				<input type="text" asp-for="Elements[i].Content2" class="form-control" style="margin-bottom:5px;" />
+				@if (Model.PostElements[i].Content2Visibility)
+				{
+					<label>Content2:</label>
+					<input type="text" asp-for="PostElements[i].PostElement.Content2" class="form-control" style="margin-bottom:5px;" />
+				}
 
-				<label>Content3:</label>
-				<input type="text" asp-for="Elements[i].Content3" class="form-control" style="margin-bottom:5px;" />
+				@if (Model.PostElements[i].Content3Visibility)
+				{
+					<label>Content3:</label>
+					<input type="text" asp-for="PostElements[i].PostElement.Content3" class="form-control" style="margin-bottom:5px;" />
+				}
 
-				<label>Content4:</label>
-				<input type="text" asp-for="Elements[i].Content4" class="form-control" style="margin-bottom:5px;" />
+				@if (Model.PostElements[i].Content4Visibility)
+				{
+					<label>Content4:</label>
+					<input type="text" asp-for="PostElements[i].PostElement.Content4" class="form-control" style="margin-bottom:5px;" />
+				}
 
 				<label>Order:</label>
-				<input type="number" asp-for="Elements[i].Order" class="form-control" style="margin-bottom:5px;" />
+				<input type="number" asp-for="PostElements[i].PostElement.Order" class="form-control" style="margin-bottom:5px;" />
 			</div>
 		}
-		<div style="text-align:right;">
-			<button type="submit" class="btn btn-light">Zapisz</button>
+		<div class="ms-3 d-flex align-items-center justify-content-end">
+			<button type="submit" name="actionType" value="save"
+					class="btn btn-light btn-sm shadow-sm text-dark fw-bold me-2"
+					style="min-width:80px;">
+				Zapisz
+			</button>
+			<button type="submit" name="actionType" value="add"
+					class="btn btn-light btn-sm shadow-sm text-dark fw-bold"
+					style="min-width:80px;">
+				Dodaj element
+			</button>
 		</div>
 	</form>
 </div>
-@* @using DBGenerator.Models.Blog
-@model Post
-
-<form asp-action="SavePostChanges" asp-route-post_name="@Model.NameUrl" method="post">
-	<textarea name="text" rows="20" cols="80">
-Id: @Model.Id
-Title: @Model.Title
-NameUrl: @Model.NameUrl
-Description: @Model.Description
-Tags: @Model.Tags
-PublishDate: @Model.PublishDate
-Position: @Model.Position
-Status: @Model.Status
-ImageUrl: @Model.ImageUrl
-@foreach (var el in Model.Elements)
-{
-<text>
-Id: @el.Id
-Type: @el.Type
-Content1: @el.Content1
-Content2: @el.Content2
-Content3: @el.Content3
-Content4: @el.Content4
-Order: @el.Order
-
-</text>
-}
-    </textarea>
-	@* <input type="hidden" name="tableId" value="@tableId" /> *@
-@*  	<button type="submit">Zapisz</button>
-</form>
-
-
-<div style="max-width:400px; background-color:#007bff; color:white; border-radius:10px; padding:10px; margin:10px;">
-    <form action="/Blog/SaveBlogPicture" method="post">
-        <input type="hidden" name="Id" value="@Model.Id" />
-        <input type="hidden" name="NameUrl" value="@Model.NameUrl" />
-
-        <div style="margin-bottom:10px;">
-            <img src="@Model.ImageUrl" style="width:100%; border-radius:5px;" />
-        </div>
-
-        <div style="margin-bottom:10px;">
-            <label>URL zdjęcia</label>
-            <input type="text" name="ImageUrl" value="@Model.ImageUrl" class="form-control" />
-        </div>
-
-        <button type="submit" class="btn btn-light">Zapisz</button>
-    </form>
-</div>
- *@
 

@@ -1,0 +1,43 @@
+﻿@using DBGenerator.Models.Blog
+@model Post
+
+@await Html.PartialAsync("_EditPostNavBar", Model)
+
+<div style="max-width:700px; margin:20px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
+	<h3>Edytuj Metas</h3>
+	<form asp-action="EditMetass" method="post">
+
+		<input type="hidden" asp-for="Id" />
+		<input type="hidden" asp-for="Metas.Id" />
+
+		<div class="form-group">
+			<label asp-for="Metas.Og_Title"></label>
+			<input asp-for="Metas.Og_Title" class="form-control" />
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Metas.Og_Description"></label>
+			<input asp-for="Metas.Og_Description" class="form-control" />
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Metas.Og_Image"></label>
+			<input asp-for="Metas.Og_Image" class="form-control" />
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Metas.Og_Url"></label>
+			<input asp-for="Metas.Og_Url" class="form-control" />
+		</div>
+
+		<div class="form-group">
+			<label asp-for="Metas.SiteTitle"></label>
+			<input asp-for="Metas.SiteTitle" class="form-control" />
+		</div>
+
+        <div style="text-align:right; margin-top:20px;">
+			<button type="submit" class="btn btn-light btn-sm shadow-sm text-dark fw-bold" style="min-width:80px;">Zapisz</button>
+        </div>
+	</form>
+</div>
+

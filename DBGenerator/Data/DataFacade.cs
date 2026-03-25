@@ -1,7 +1,9 @@
 ﻿using DBGenerator.Models;
 using DBGenerator.Models.Ads;
 using DBGenerator.Models.Blog;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using System.Runtime.CompilerServices;
 
 namespace DBGenerator.Data
@@ -72,7 +74,7 @@ namespace DBGenerator.Data
 
         public async Task Save(Database db)
         {
-            if(db.Id == 0)
+            if (db.Id == 0)
             {
                 _db.Databases.Add(db);
             }
@@ -105,7 +107,7 @@ namespace DBGenerator.Data
                 Tables = new List<Table>()
             };
 
-            foreach(var table in original.Tables)
+            foreach (var table in original.Tables)
             {
                 var newTable = new Table
                 {
@@ -114,14 +116,14 @@ namespace DBGenerator.Data
                     Datas = new List<Datas>(),
                     ForeignKeys = new List<ForeignKey>()
                 };
-                foreach(var data in table.Datas)
+                foreach (var data in table.Datas)
                 {
                     newTable.Datas.Add(new Datas
                     {
                         Value = data.Value
                     });
                 }
-                foreach(var fk in table.ForeignKeys)
+                foreach (var fk in table.ForeignKeys)
                 {
                     newTable.ForeignKeys.Add(new ForeignKey
                     {
@@ -129,7 +131,7 @@ namespace DBGenerator.Data
                         TablePkName = fk.TablePkName
                     });
                 }
-                foreach(var col in table.Columns)
+                foreach (var col in table.Columns)
                 {
                     newTable.Columns.Add(new Column
                     {
@@ -154,7 +156,7 @@ namespace DBGenerator.Data
 
         public async Task Save(Table table)
         {
-            if(table.Id == 0)
+            if (table.Id == 0)
             {
                 var db = _db.Databases.First(d => d.Id == table.Database.Id);
                 db.Tables.Add(table);
@@ -230,7 +232,84 @@ namespace DBGenerator.Data
 
         public async Task<List<PostElement>> GetPostElements(int postId)
         {
-            return await _db.PostElements.Where(x => x.Id == postId).ToListAsync(); 
+            return await _db.PostElements.Where(x => x.Id == postId).ToListAsync();
+        }
+
+        public async Task UpdateAndSavePostChanges(Post model)
+        {
+            var post = await GetPost(model.NameUrl);
+
+            post.Title = model.Title;
+            post.Description = model.Description;
+            post.Tags = model.Tags;
+            post.PublishDate = model.PublishDate;
+            post.Position = model.Position;
+            post.Status = model.Status;
+            post.ImageUrl = model.ImageUrl;
+
+            await _db.SaveChangesAsync();
+        }
+
+        public Task<List<PostElement>> GetPostElements(List<int> ids)
+        {
+            return _db.PostElements
+            .Where(e => ids.Contains(e.Id))
+            .ToListAsync();
+        }
+
+        public Task<List<PostElement>> GetPostElementsByPostId(int postId)
+        {
+            return _db.PostElements
+                .Where(e => e.Post.Id == postId)
+                .ToListAsync();
+        }
+        public async Task Save(List<PostElement> elements) 
+        {
+            var post = await _db.Posts.Include(p => p.Elements).FirstOrDefaultAsync(p => p.Id == elements[0].Post.Id);
+            foreach (var element in post.Elements)
+            {
+                var newElement = elements.FirstOrDefault(e => e.Id == element.Id);
+                if (newElement == null)
+                {
+                    post.Elements.Remove(element);
+                }
+                else
+                {
+                    element.Content1 = newElement.Content1;
+                    element.Content2 = newElement.Content2;
+                    element.Content3 = newElement.Content3;
+                    element.Content4 = newElement.Content4;
+                    element.Type = newElement.Type;
+                    element.Order = newElement.Order;
+                }
+            }
+            post.Elements.AddRange(elements.Where(e => e.Id == 0));
+            await _db.SaveChangesAsync();
+        }
+  
+        public async Task<Post> GetPostWithMetasById(int postId)
+        {
+            var postWithMetas = await _db.Posts
+                      .Include(p => p.Metas)
+                      .FirstOrDefaultAsync(p => p.Id == postId);
+
+            return postWithMetas;
+        }
+        public async Task<Post> UpdateMetas(Post post)
+        {
+            var postWithMetas = await GetPostWithMetasById(post.Id);
+            if (postWithMetas != null)
+            {
+
+                postWithMetas.Metas.Og_Title = post.Metas.Og_Title;
+                postWithMetas.Metas.Og_Description = post.Metas.Og_Description;
+                postWithMetas.Metas.Og_Image = post.Metas.Og_Image;
+                postWithMetas.Metas.SiteTitle = post.Metas.SiteTitle;
+               
+            
+                _db.SaveChanges();
+            }
+            return postWithMetas; 
         }
     }
 }

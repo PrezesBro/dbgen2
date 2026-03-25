@@ -1,6 +1,7 @@
 ﻿using DBGenerator.Data;
 using DBGenerator.Models;
 using DBGenerator.Models.Ads;
+using DBGenerator.Models.Blog;
 
 namespace DBGenerator.Admin
 {
@@ -55,6 +56,6 @@ namespace DBGenerator.Admin
         public async Task Save(Ads ads)
         {
             await _data.Save(ads);
-        }
+        }     
     }
 }

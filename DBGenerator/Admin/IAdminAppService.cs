@@ -1,5 +1,6 @@
 ﻿using DBGenerator.Models;
 using DBGenerator.Models.Ads;
+using DBGenerator.Models.Blog;
 
 namespace DBGenerator.Admin
 {
@@ -14,5 +15,6 @@ namespace DBGenerator.Admin
         Task Save(Table table);
         Task<List<Ads>> GetAds();
         Task Save(Ads ads);
+        
     }
 }

@@ -23,10 +23,16 @@ namespace DBGenerator.Data
         Task<List<Models.Blog.Post>> GetPromoPosts();
         Task<Models.Blog.Post> GetMainPost();
         Task<Models.Blog.Post> GetPost(int postId);
-        Task<List<Models.Blog.Post>> GetAllPosts();
+        Task<List<Models.Blog.Post>> GetAllPosts(); 
         Task<int> CountPosts();
         Task<Models.Blog.Post> GetPostWithElements(string name);
-        Task<Models.Blog.Post> GetPost(string name);
+        Task<Models.Blog.Post> GetPost(string name); 
         Task<List<Models.Blog.PostElement>> GetPostElements(int postId);
+        Task UpdateAndSavePostChanges(Models.Blog.Post model);  
+        Task<List<Models.Blog.PostElement>> GetPostElements(List<int> ids);
+        Task<List<Models.Blog.PostElement>> GetPostElementsByPostId(int postId);
+        Task<Models.Blog.Post> GetPostWithMetasById(int postId);
+        Task<Models.Blog.Post> UpdateMetas(Models.Blog.Post post);
+        Task Save(List<Models.Blog.PostElement> elements);
     }
 }

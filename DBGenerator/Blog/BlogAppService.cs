@@ -1,5 +1,7 @@
 ﻿using DBGenerator.Data;
+using DBGenerator.Models;
 using DBGenerator.Models.Blog;
+using Microsoft.Extensions.Hosting;
 
 namespace DBGenerator.Blog
 {
@@ -57,7 +59,7 @@ namespace DBGenerator.Blog
         {
             var result = new EditPostViewModel();
             result.Post = await _data.GetPost(post_name);
-            var elements = await _data.GetPostElements(result.Post.Id);
+            var elements = await _data.GetPostElementsByPostId(result.Post.Id);
             result.PostElements = elements.Select(e => new PostElementViewModel
             {
                 PostElement = e,
@@ -65,20 +67,45 @@ namespace DBGenerator.Blog
                 Content3Visibility = ContentVisibilityResolver(e.Type, 3),
                 Content4Visibility = ContentVisibilityResolver(e.Type, 4)
             }).ToList();
-            //w widoku if(model.Content2Visibility) -> {html kontrolki edycji Content2} 
             return result;
         }
 
-        private bool ContentVisibilityResolver(ElementType type, int contentNumber)
+        private bool ContentVisibilityResolver(ElementType type, int contentNumber) 
         {
             if (type == ElementType.Title && contentNumber == 2) return true;
 
             if (type == ElementType.LeftImage && contentNumber == 2) return true;
 
             if (type == ElementType.RightImage && contentNumber == 2) return true;
-
-
+                 
             return false;
+        }
+
+        public async Task<List<Post>> GetPostsOrderedByPublishDateAsync() 
+        {
+            var list = await _data.GetAllPosts();
+            
+            return list.OrderByDescending(x => x.PublishDate).ToList();
+        }
+
+        public async Task UpdatePost(Post model)
+        {
+             await _data.UpdateAndSavePostChanges(model);        
+        }
+
+        public async Task UpdatePostElements(List<PostElement> elements) 
+        {
+            await _data.Save(elements);
+        }
+        public async Task<Post> GetPostWithMetasById(int postId)
+        {
+            var post = await _data.GetPostWithMetasById(postId);
+            return post;
+        }
+        public async Task<Post> UpdateMetas(Post post)
+        {
+            var postMetas = await _data.UpdateMetas(post);
+            return postMetas;
         }
     }
 }

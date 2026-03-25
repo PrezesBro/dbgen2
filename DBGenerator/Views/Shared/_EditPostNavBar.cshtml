@@ -1,0 +1,12 @@
+﻿@using DBGenerator.Models.Blog
+@model Post
+
+<div style="position:fixed; top:100px; left:20px; display:flex; flex-direction:column; gap:15px; font-family:sans-serif;">
+	<a asp-action="EditPost" asp-route-post_name="@Model.NameUrl" class="btn btn-light text-start" style="color:#ccc; font-weight:500; border:none; background:none; padding:0;">
+		Post i Elementy
+	</a>
+
+	<a asp-action="EditMetas" asp-route-postId="@Model.Id" class="btn btn-light text-start" style="color:#ccc; font-weight:500; border:none; background:none; padding:0;">
+		Metas
+	</a>
+</div>

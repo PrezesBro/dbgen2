@@ -1,65 +1,73 @@
-﻿@model DBGenerator.Models.Blog.BlogViewModel
+﻿@using DBGenerator.Models.Blog
+@model List<Post>
 
-<div class="row">
-    <div class="col-lg-6 blog-tile">
-        <div class="blog-content">
-            <img src="@Model.MainPost.ImageUrl" />
-            <h2>@Model.MainPost.Title</h2>
-            <p>@Model.MainPost.Description</p>
-            <a class="btn btn-primary" asp-controller="Blog" asp-action="ShowPost" asp-route-post_name="@Model.MainPost.NameUrl">Czytaj</a>
-            <a class="btn btn-success" asp-controller="Blog" asp-action="EditPost" asp-route-post_name="@Model.MainPost.NameUrl">Edytuj</a> @* zmiana *@
-        </div>
-    </div>
-    <div class="col-lg-6">
-        @for (int i = 0; i < (Model.PromoPosts.Count > 3 ? 3 : Model.PromoPosts.Count); i++)
-        {
-            <div class="row blog-tile blog-content">
-                <div class="col-4 blog-tile">
-                    <img src="@Model.PromoPosts[i].ImageUrl" />
-                </div>
-                <div class="col-8">
-                    <h3>@Model.PromoPosts[i].Title</h3>
-                    <p>@Model.PromoPosts[i].Description</p>
-                    <a class="btn btn-primary" asp-controller="Blog" asp-action="ShowPost" asp-route-post_name="@Model.PromoPosts[i].NameUrl">Czytaj</a>
-                    <a class="btn btn-success" asp-controller="Blog" asp-action="EditPost" asp-route-post_name="@Model.PromoPosts[i].NameUrl">Edytuj</a>@* zmiana *@
-                </div>
-            </div>
-        }
-    </div>
-</div>
-<div class="row">
-    @foreach (var post in Model.Posts.Posts)
+
+@{
+    var updatedId = TempData["UpdatedPostId"] as int?;
+}
+
+
+<div class="container mt-4">
+
+    @foreach (var post in Model)
     {
-        <div class="col-md-4 blog-tile">
-            <div class="blog-content">
-                <img src="@post.ImageUrl" />
-                <h2>@post.Title</h2>
-                <p>@post.Description</p>
-                <a class="btn btn-primary" asp-controller="Blog" asp-action="ShowPost" asp-route-post_name="@post.NameUrl">Czytaj</a>
-                <a class="btn btn-success" asp-controller="Blog" asp-action="EditPost" asp-route-post_name="@post.NameUrl">Edytuj</a>
+        var isUpdated = updatedId.HasValue && updatedId.Value == post.Id;
+        var borderStyle = isUpdated
+        ? "2px solid lime; box-shadow:0 0 15px lime;"
+        : "1px solid rgba(255,255,255,0.3); box-shadow:0 0 10px rgba(255,255,255,0.4);";
+        var updatedIdAttr = isUpdated ? "updated-post" : "";
 
+        <div id="@updatedIdAttr" class="card text-white mb-3" style="
+                    max-width:900px;
+                    margin:20px auto;
+                    background-color:rgba(0,0,0,0.1);
+                    color:white;
+                    padding:20px;
+                    border-radius:12px;
+                    border:@borderStyle;
+                    backdrop-filter: blur(6px);
+                ">
+            <div class="d-flex align-items-center">
+
+                <img src="@post.ImageUrl"
+                     class="img-fluid rounded"
+                     style="width:150px; margin-right:15px;" />
+
+                <div class="flex-grow-1">
+                    <h5>@post.Title</h5>
+                    <p class="mb-1" style="font-size:0.9rem;">@post.Description</p>
+                    <small>ID: @post.Id</small><br />
+                    <small>Opublikowano: @post.PublishDate.ToString("dd.MM.yyyy HH:mm")</small>
+                </div>
+
+                <div class="ms-3 d-flex align-items-center">
+                    <a class="btn btn-light btn-sm shadow-sm text-dark fw-bold"
+                       asp-action="EditPost"
+                       asp-route-post_name="@post.NameUrl"
+                       style="min-width:80px;">
+                        Edytuj
+                    </a>
+                </div>
             </div>
         </div>
     }
 </div>
-<div class="row">
-    <div class="col-12 align-content-center">
-        <nav>
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" asp-action="EditBlog" asp-controller="Blog">Najnowsze</a></li>
-                @foreach (var p in Model.Posts.PageList)
-                {
-                    @if (p == 0)
-                    {
-                        <li class="page-item"><p class="page-link">...</p></li>
-                    }
-                    else
-                    {
-                        <li class="page-item"><a class="page-link" asp-action="EditBlog" asp-controller="Blog" asp-route-p="@p">@p</a></li>
-                    }
-                }
-                <li class="page-item"><a class="page-link" asp-action="EditBlog" asp-controller="Blog" asp-route-p="@Model.Posts.TotalPages">Najstarsze</a></li>
-            </ul>
-        </nav>
-    </div>
-</div>
+
+<script>
+
+    setTimeout(() => {
+        const el = document.getElementById("updated-post");
+        if (el) {
+            el.style.border = "1px solid rgba(255,255,255,0.3)";
+            el.style.boxShadow = "0 0 10px rgba(255,255,255,0.4)";
+        }
+    }, 6000);
+
+    document.addEventListener("click", () => {
+        const el = document.getElementById("updated-post");
+        if (el) {
+            el.style.border = "1px solid rgba(255,255,255,0.3)";
+            el.style.boxShadow = "0 0 10px rgba(255,255,255,0.4)";
+        }
+    });
+</script>

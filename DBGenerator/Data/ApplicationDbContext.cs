@@ -22,7 +22,7 @@ namespace DBGenerator.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<PostElement> PostElements { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<PostElement>(pe =>
