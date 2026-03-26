@@ -6,7 +6,7 @@
             <img src="@Model.MainPost.ImageUrl"/>
             <h2>@Model.MainPost.Title</h2>
             <p>@Model.MainPost.Description</p>
-            <a class="btn btn-primary" asp-controller="Blog" asp-action="ShowPost" asp-route-post_name="@Model.MainPost.NameUrl">Czytaj</a>
+            <a class="btn btn-primary" asp-controller="Blog" asp-action="ShowPost" asp-route-id="@Model.MainPost.Id">Czytaj</a>
         </div>
     </div>
     <div class="col-lg-6">

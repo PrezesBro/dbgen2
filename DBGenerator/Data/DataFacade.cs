@@ -296,7 +296,7 @@ namespace DBGenerator.Data
 
         public async Task UpdateAndSavePostChanges(Post model)
         {
-            var post = await GetPost(model.NameUrl);
+            var post = await GetPost(model.Id);
 
             post.Title = model.Title;
             post.Description = model.Description;

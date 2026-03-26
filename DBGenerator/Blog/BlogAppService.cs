@@ -54,11 +54,31 @@ namespace DBGenerator.Blog
             post.Elements = post.Elements.OrderBy(p => p.Order).ToList();
             return post;
         }
+        public async Task<Post> GetPostWithElements(int id)
+        {
+            var post = await _data.GetPostWithElements(id);
+            post.Elements = post.Elements.OrderBy(p => p.Order).ToList();
+            return post;
+        }
 
         public async Task<EditPostViewModel> GetEditPostVM(string post_name)
         {
             var result = new EditPostViewModel();
             result.Post = await _data.GetPost(post_name);
+            var elements = await _data.GetPostElementsByPostId(result.Post.Id);
+            result.PostElements = elements.Select(e => new PostElementViewModel
+            {
+                PostElement = e,
+                Content2Visibility = ContentVisibilityResolver(e.Type, 2),
+                Content3Visibility = ContentVisibilityResolver(e.Type, 3),
+                Content4Visibility = ContentVisibilityResolver(e.Type, 4)
+            }).ToList();
+            return result;
+        }
+        public async Task<EditPostViewModel> GetEditPostVM(int id)
+        {
+            var result = new EditPostViewModel();
+            result.Post = await _data.GetPost(id);
             var elements = await _data.GetPostElementsByPostId(result.Post.Id);
             result.PostElements = elements.Select(e => new PostElementViewModel
             {

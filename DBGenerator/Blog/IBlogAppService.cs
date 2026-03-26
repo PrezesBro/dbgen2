@@ -14,5 +14,7 @@ namespace DBGenerator.Blog
         Task<Post> UpdateMetas(Post post);
         Task ClonePost(int id);
         Task DeletePost(int id);
+        Task<Post> GetPostWithElements(int id);
+        Task<EditPostViewModel> GetEditPostVM(int id);
     }
 }

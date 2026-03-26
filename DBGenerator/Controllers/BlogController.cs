@@ -26,15 +26,14 @@ namespace DBGenerator.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> ShowPost(string post_name)
+        public async Task<IActionResult> ShowPost(int id)
         {
-            var model = await _blogAppService.GetPostWithElements(post_name);
-            //SetMetas(model.Metas); 
+            var model = await _blogAppService.GetPostWithElements(id); 
             return View(model);
         }
-        public async Task<IActionResult> EditPost(string post_name)
+        public async Task<IActionResult> EditPost(int id)
         {   
-            var model = await _blogAppService.GetEditPostVM(post_name);    
+            var model = await _blogAppService.GetEditPostVM(id);
             ViewBag.NameUrl = model.Post.NameUrl;
             
             return View("EditPost", model);
@@ -91,8 +90,8 @@ namespace DBGenerator.Controllers
         [HttpPost]
         public async Task<IActionResult> EditMetass(Post post)
         {
-            var postMetas = await _blogAppService.UpdateMetas(post); 
-            return View("EditMetas", postMetas); 
+            var postMetas = await _blogAppService.UpdateMetas(post);
+            return RedirectToAction("GetAllPosts");
         }
 
         public async Task<IActionResult> CopyPost(int id)
