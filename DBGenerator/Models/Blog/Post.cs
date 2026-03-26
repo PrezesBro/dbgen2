@@ -11,6 +11,7 @@
         public Position Position { get; set; } = 0;
         public Status Status { get; set; }
         public string ImageUrl { get; set; }
+        public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
         public virtual List<PostElement> Elements { get; set; } = new List<PostElement>();
         public virtual Metas Metas { get; set; }

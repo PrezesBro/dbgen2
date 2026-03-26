@@ -94,6 +94,17 @@ namespace DBGenerator.Controllers
             var postMetas = await _blogAppService.UpdateMetas(post); 
             return View("EditMetas", postMetas); 
         }
+
+        public async Task<IActionResult> CopyPost(int id)
+        {
+            await _blogAppService.ClonePost(id);
+            return RedirectToAction("GetAllPosts");
+        }
+        public async Task<IActionResult> DeletePost(int id)
+        {
+            await _blogAppService.DeletePost(id);
+            return RedirectToAction("GetAllPosts");
+        }
     }
 }
 

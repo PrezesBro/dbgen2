@@ -107,5 +107,14 @@ namespace DBGenerator.Blog
             var postMetas = await _data.UpdateMetas(post);
             return postMetas;
         }
+        public async Task ClonePost(int id)
+        {
+            await _data.ClonePost(id);
+
+        }
+        public async Task DeletePost(int id)
+        {
+            await _data.DeletePost(id);
+        }
     }
 }

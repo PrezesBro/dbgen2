@@ -90,15 +90,70 @@ namespace DBGenerator.Data
 
             await _db.SaveChangesAsync();
         }
+        public async Task ClonePost(int id)
+        {
+            var orginal = await GetEntirePost(id);
 
+            if (orginal == null) return;
+
+            var clone = new Post
+            {
+                Title = orginal.Title + " -kopia",
+                NameUrl = orginal.NameUrl + " -kopia",
+                Description = orginal.Description,
+                Tags = orginal.Tags,
+                PublishDate = DateTime.Now.Date,
+                Position = orginal.Position,
+                Status = orginal.Status,
+                ImageUrl = orginal.ImageUrl,
+                CategoryId = orginal.CategoryId,
+                Elements = new List<PostElement>(),
+                Metas = new Metas
+                {
+                    Og_Title = orginal.Metas.Og_Title,
+                    Og_Description = orginal.Metas.Og_Description,
+                    Og_Image = orginal.Metas.Og_Image,
+                    Og_Url = orginal.Metas.Og_Url,
+                    SiteTitle = orginal.Metas.SiteTitle
+                }
+            };
+
+            var clonedElements = orginal.Elements
+                .Select(e => new PostElement
+                {
+                    Type = e.Type,
+                    Content1 = e.Content1,
+                    Content2 = e.Content2,
+                    Content3 = e.Content3,
+                    Content4 = e.Content4,
+                    Order = e.Order,                  
+                })
+                .ToList();
+
+            clone.Elements = clonedElements;
+            _db.Posts.Add(clone);  
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task DeletePost(int id)
+        {
+            var post = await GetEntirePost(id);
+
+            if (post != null)
+            {
+                _db.Remove(post);
+            }
+
+            await _db.SaveChangesAsync();
+        }
         public async Task Clone(int id)
         {
-            var original = await GetDatabaseWithContent(id);
-
+            var original = await GetDatabaseWithContent(id); 
+                                                              
             if (original == null) return;
 
-            var clone = new Database
-            {
+            var clone = new Database                   
+            {                                           
                 Name = original.Name,
                 Version = original.Version + 1,
                 IsVisible = false,
@@ -107,7 +162,7 @@ namespace DBGenerator.Data
                 Tables = new List<Table>()
             };
 
-            foreach (var table in original.Tables)
+            foreach (var table in original.Tables)        
             {
                 var newTable = new Table
                 {
@@ -118,7 +173,7 @@ namespace DBGenerator.Data
                 };
                 foreach (var data in table.Datas)
                 {
-                    newTable.Datas.Add(new Datas
+                    newTable.Datas.Add(new Datas                
                     {
                         Value = data.Value
                     });
@@ -141,12 +196,12 @@ namespace DBGenerator.Data
                     });
                 }
 
-                clone.Tables.Add(newTable);
+                clone.Tables.Add(newTable);             
             }
 
-            _db.Databases.Add(clone);
+            _db.Databases.Add(clone);                   
 
-            await _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();                 
         }
 
         public async Task<Table> GetTable(int id)
@@ -224,6 +279,10 @@ namespace DBGenerator.Data
         {
             return await _db.Posts.Include(p => p.Elements).FirstOrDefaultAsync(p => p.NameUrl == name);
         }
+        public async Task<Post> GetPostWithElements(int id)
+        {
+            return await _db.Posts.Include(p => p.Elements).FirstOrDefaultAsync(p => p.Id == id);
+        }
 
         public async Task<Post> GetPost(string name)
         {
@@ -291,6 +350,15 @@ namespace DBGenerator.Data
         {
             var postWithMetas = await _db.Posts
                       .Include(p => p.Metas)
+                      .FirstOrDefaultAsync(p => p.Id == postId);
+
+            return postWithMetas;
+        }
+        public async Task<Post> GetEntirePost(int postId)
+        {
+            var postWithMetas = await _db.Posts
+                      .Include(p => p.Metas)
+                      .Include(e => e.Elements)                      
                       .FirstOrDefaultAsync(p => p.Id == postId);
 
             return postWithMetas;

@@ -34,5 +34,9 @@ namespace DBGenerator.Data
         Task<Models.Blog.Post> GetPostWithMetasById(int postId);
         Task<Models.Blog.Post> UpdateMetas(Models.Blog.Post post);
         Task Save(List<Models.Blog.PostElement> elements);
+        Task<Models.Blog.Post> GetPostWithElements(int id);
+        Task ClonePost(int id);
+        Task<Models.Blog.Post> GetEntirePost(int postId);
+        Task DeletePost(int id);
     }
 }
