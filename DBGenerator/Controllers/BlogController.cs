@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NuGet.Protocol;
 using System;
 using System.Text.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace DBGenerator.Controllers
@@ -26,9 +27,9 @@ namespace DBGenerator.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> ShowPost(int id)
+        public async Task<IActionResult> ShowPost(string nameUrl)
         {
-            var model = await _blogAppService.GetPostWithElements(id); 
+            var model = await _blogAppService.GetPostWithElements(nameUrl); 
             return View(model);
         }
         public async Task<IActionResult> EditPost(int id)
@@ -51,7 +52,10 @@ namespace DBGenerator.Controllers
         {
             await _blogAppService.UpdatePost(model);
             TempData["UpdatedPostId"] = model.Id;
-
+            ModelState.AddModelError(nameof(model.Category), "Błąd");
+            if (ModelState.IsValid)
+            {
+            }
             return RedirectToAction("GetAllPosts"); 
         }
 
@@ -104,6 +108,20 @@ namespace DBGenerator.Controllers
             await _blogAppService.DeletePost(id);
             return RedirectToAction("GetAllPosts");
         }
+        public  IActionResult AddNewPost()
+        {
+            var model = new Post(); 
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveNewPost(Post post)
+        {
+            await _blogAppService.SaveNewPost(post);
+            if(post == null)
+                return RedirectToAction("GetAllPosts");
+
+            TempData["SuccessMessage"] = "Post został pomyślnie utworzony, uzupełnij elementy i metas!";
+            return RedirectToAction("EditPost", new { id = post.Id });
+        }
     }
 }
-

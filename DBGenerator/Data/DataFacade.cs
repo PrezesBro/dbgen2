@@ -265,7 +265,7 @@ namespace DBGenerator.Data
         public async Task<List<Post>> GetPosts(int page, int size)
         {
             return await _db.Posts.
-                Skip((page - 1) * size)
+                Skip((page - 1) * size) 
                 .Take(size)
                 .ToListAsync();
         }
@@ -287,11 +287,6 @@ namespace DBGenerator.Data
         public async Task<Post> GetPost(string name)
         {
             return await _db.Posts.FirstOrDefaultAsync(p => p.NameUrl == name);
-        }
-
-        public async Task<List<PostElement>> GetPostElements(int postId)
-        {
-            return await _db.PostElements.Where(x => x.Id == postId).ToListAsync();
         }
 
         public async Task UpdateAndSavePostChanges(Post model)
@@ -378,6 +373,20 @@ namespace DBGenerator.Data
                 _db.SaveChanges();
             }
             return postWithMetas; 
+        }
+        public async Task SaveNewPost(Post post)
+        {
+            post.CategoryId = 1;
+            post.Metas = new Metas
+            {
+                Og_Title = string.Empty,
+                Og_Description = string.Empty,
+                Og_Image = string.Empty,
+                Og_Url = string.Empty,
+                SiteTitle = string.Empty,
+            }; 
+            _db.Posts.Add(post);
+            await _db.SaveChangesAsync();
         }
     }
 }

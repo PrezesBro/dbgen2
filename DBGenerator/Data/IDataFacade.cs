@@ -27,7 +27,6 @@ namespace DBGenerator.Data
         Task<int> CountPosts();
         Task<Models.Blog.Post> GetPostWithElements(string name);
         Task<Models.Blog.Post> GetPost(string name); 
-        Task<List<Models.Blog.PostElement>> GetPostElements(int postId);
         Task UpdateAndSavePostChanges(Models.Blog.Post model);  
         Task<List<Models.Blog.PostElement>> GetPostElements(List<int> ids);
         Task<List<Models.Blog.PostElement>> GetPostElementsByPostId(int postId);
@@ -38,5 +37,6 @@ namespace DBGenerator.Data
         Task ClonePost(int id);
         Task<Models.Blog.Post> GetEntirePost(int postId);
         Task DeletePost(int id);
+        Task SaveNewPost(Models.Blog.Post post);
     }
 }

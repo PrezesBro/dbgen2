@@ -4,7 +4,6 @@
 @await Html.PartialAsync("_EditPostNavBar", Model.Post)
 
 
-
 <div style="max-width:700px; margin:20px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
 	<h3>Edytuj post</h3>
 	<form asp-action="SavePostChanges" method="post">			
@@ -124,9 +123,7 @@
 
 				<label>Content1:</label>
 				<input type="text" asp-for="PostElements[i].PostElement.Content1" class="form-control" style="margin-bottom:5px;" />
-				<span asp-validation-for="PostElements[i].PostElement.Content1" class="text-danger"></span>
-				<span asp-validation-for="PostElements[i].PostElement.Content1" class="text-danger"></span>
-
+				
 				@if (Model.PostElements[i].Content2Visibility)
 				{
 					<label>Content2:</label>
@@ -164,3 +161,24 @@
 	</form>
 </div>
 
+@if (TempData["SuccessMessage"] != null)
+{
+	<div id="successToast" style="
+	    position: fixed;
+	    top: 10%;
+	    left: 43%;
+	    transform: translate(-50%, -50%);
+	    background: #28a745;
+	    color: white;
+	    padding: 15px 20px;
+	    border-radius: 8px;
+	    z-index: 9999;">
+		@TempData["SuccessMessage"]
+	</div>
+
+	<script>
+		setTimeout(() => {
+			document.getElementById("successToast").style.display = "none";
+		}, 6000);
+	</script>
+}

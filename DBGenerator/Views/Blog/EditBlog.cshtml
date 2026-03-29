@@ -5,7 +5,24 @@
 @{
     var updatedId = TempData["UpdatedPostId"] as int?;
 }
-
+<div class="d-flex align-items-center">
+    <div class="ms-auto">
+        <a class="btn fw-bold px-3 py-2 fs-6"
+           asp-action="AddNewPost"
+           style="
+               min-width:80px;
+               background-color: transparent;
+               border: 1px solid gold;
+               color: gold;
+               box-shadow: 0 0 6px gold;
+               transition: 0.3s;
+           "
+           onmouseover="this.style.boxShadow='0 0 18px gold'"
+           onmouseout="this.style.boxShadow='0 0 6px gold'">
+             Dodaj Post
+        </a>
+    </div>
+</div>
 
 <div class="container mt-4">
 

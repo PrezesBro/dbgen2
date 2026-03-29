@@ -73,7 +73,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ads");
+                    b.ToTable("Ads", (string)null);
                 });
 
             modelBuilder.Entity("DBGenerator.Models.Blog.Category", b =>
@@ -90,7 +90,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("DBGenerator.Models.Blog.Post", b =>
@@ -142,7 +142,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasIndex("MetasId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("DBGenerator.Models.Blog.PostElement", b =>
@@ -179,7 +179,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("PostElements");
+                    b.ToTable("PostElements", (string)null);
                 });
 
             modelBuilder.Entity("DBGenerator.Models.Column", b =>
@@ -208,7 +208,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasIndex("TableId");
 
-                    b.ToTable("Columns");
+                    b.ToTable("Columns", (string)null);
                 });
 
             modelBuilder.Entity("DBGenerator.Models.Database", b =>
@@ -238,7 +238,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Databases");
+                    b.ToTable("Databases", (string)null);
                 });
 
             modelBuilder.Entity("DBGenerator.Models.Datas", b =>
@@ -260,7 +260,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasIndex("TableId");
 
-                    b.ToTable("Datas");
+                    b.ToTable("Datas", (string)null);
                 });
 
             modelBuilder.Entity("DBGenerator.Models.ForeignKey", b =>
@@ -286,7 +286,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasIndex("TableId");
 
-                    b.ToTable("ForeignKey");
+                    b.ToTable("ForeignKey", (string)null);
                 });
 
             modelBuilder.Entity("DBGenerator.Models.Metas", b =>
@@ -319,7 +319,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Metas");
+                    b.ToTable("Metas", (string)null);
                 });
 
             modelBuilder.Entity("DBGenerator.Models.Table", b =>
@@ -341,7 +341,7 @@ namespace DBGenerator.Data.Migrations
 
                     b.HasIndex("DatabaseId");
 
-                    b.ToTable("Tables");
+                    b.ToTable("Tables", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

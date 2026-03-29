@@ -136,5 +136,10 @@ namespace DBGenerator.Blog
         {
             await _data.DeletePost(id);
         }
+        public async Task SaveNewPost(Post post)
+        {
+            await _data.SaveNewPost(post);
+        }
     }
 }
+ 

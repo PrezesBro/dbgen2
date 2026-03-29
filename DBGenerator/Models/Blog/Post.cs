@@ -1,4 +1,5 @@
-﻿namespace DBGenerator.Models.Blog
+﻿
+namespace DBGenerator.Models.Blog
 {
     public class Post
     {

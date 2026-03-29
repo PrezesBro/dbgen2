@@ -1,0 +1,68 @@
+﻿@using DBGenerator.Models.Blog
+@model Post
+
+<div style="max-width:700px; margin:20px auto 50px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
+	<h3>Dodaj post</h3>
+	<form asp-action="SaveNewPost" method="post">
+	@* 	<input type="hidden" name="Id" value="@Model.Post.Id" />
+		<input type="hidden" name="NameUrl" value="@Model.Post.NameUrl" / >*@
+
+		<div style="margin-bottom:15px;">
+			<label>Title</label>
+			<input type="text" name="Title" class="form-control" required />
+		</div>
+
+		<div style="margin-bottom:15px;">
+			<label>Description</label>
+			<textarea name="Description" class="form-control" required rows="3"></textarea>
+		</div>
+
+		<div style="margin-bottom:15px;">
+			<label>NameUrl</label>
+			<input type="text" name="NameUrl" class="form-control" required />
+		</div>
+
+		<div style="margin-bottom:15px;">
+			<label>Tags</label>
+			<input type="text" name="Tags" class="form-control" required />
+		</div>
+
+		<div style="margin-bottom:15px;">
+			<label>Publish Date</label>
+			<input type="datetime-local" name="PublishDate" class="form-control" required />
+		</div>
+
+		<div style="margin-bottom:15px;">
+			<label>Position</label>
+			<select name="Position" class="form-select" required>
+				@foreach (Position pos in Enum.GetValues(typeof(Position)))
+				{
+					<option value="@pos">@pos</option>
+				}
+			</select>
+		</div>
+		
+		<div style="margin-bottom:15px;">
+			<label>Status</label>
+			<select name="Status" class="form-select" required>
+				@foreach (Status st in Enum.GetValues(typeof(Status)))
+				{
+					<option value="@st">@st </option>
+				}
+			</select>
+		</div>
+
+		<div style="margin-bottom:15px;">
+			<label>Image URL</label>
+			<input type="text" name="ImageUrl" class="form-control" required />
+		</div>
+
+		<div style="text-align:right;">
+			<button type="submit"
+					class="btn btn-light btn-sm shadow-sm text-dark fw-bold"
+					style="min-width:80px;">
+				Zapisz
+			</button>
+		</div>
+	</form>
+</div>
