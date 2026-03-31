@@ -40,10 +40,11 @@ namespace DBGenerator.Controllers
             return View("EditPost", model);
         }
 
-        public async Task<IActionResult> GetAllPosts()
+        public async Task<IActionResult> GetAllPosts(int p)
         {
-            var posts = await _blogAppService.GetPostsOrderedByPublishDateAsync(); 
-           
+            if (p == 0) p = 1;
+            var posts = await _blogAppService.GetPostPageVM(p);
+
             return View("EditBlog", posts);
         }
 
@@ -125,3 +126,29 @@ namespace DBGenerator.Controllers
         }
     }
 }
+
+
+//przeniesc css z widoku do klasy 
+//js to samo
+
+
+//edit blog dodac przycisk na dodanie kategorii do słownika 
+//w edit post z list rozwijanej mozna wybrac kategorie
+
+//dodawanie postów
+//zmienić show post na NameUrl
+//migracja Category
+
+//paginacja w edit posts 265 w df
+//wyciągnąć mechanizm z GetBlogVM do private do paginacji
+
+
+
+
+//walidacja w poście NameUrl
+
+
+
+//za tydzien walidacja 
+//testy jednostkowe, mockowanie, fixture
+//solenium do testów

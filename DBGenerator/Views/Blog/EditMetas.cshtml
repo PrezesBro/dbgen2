@@ -3,7 +3,7 @@
 
 @await Html.PartialAsync("_EditPostNavBar", Model)
 
-<div style="max-width:700px; margin:20px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
+<div class="post-container">
 	<h3>Edytuj Metas</h3>
 	<form asp-action="EditMetass" method="post">
 
@@ -36,7 +36,7 @@
 		</div>
 
         <div style="text-align:right; margin-top:20px;">
-			<button type="submit" class="btn btn-light btn-sm shadow-sm text-dark fw-bold" style="min-width:80px;">Zapisz</button>
+			<button type="submit" class="btn btn-light btn-sm shadow-sm text-dark fw-bold btn-save">Zapisz</button>
         </div>
 	</form>
 </div>

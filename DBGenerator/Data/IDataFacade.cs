@@ -38,5 +38,6 @@ namespace DBGenerator.Data
         Task<Models.Blog.Post> GetEntirePost(int postId);
         Task DeletePost(int id);
         Task SaveNewPost(Models.Blog.Post post);
+        Task<List<Models.Blog.Post>> GetPagedAndFilteredPostsAsync(int page, int size);
     }
 }

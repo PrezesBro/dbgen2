@@ -95,11 +95,11 @@ namespace DBGenerator.Data
             var orginal = await GetEntirePost(id);
 
             if (orginal == null) return;
-
+            var ticks = DateTime.Now.Ticks;
             var clone = new Post
             {
-                Title = orginal.Title + " -kopia",
-                NameUrl = orginal.NameUrl + " -kopia",
+                Title = orginal.Title + $"-{ticks}",
+                NameUrl = orginal.NameUrl + $"-{ticks}",
                 Description = orginal.Description,
                 Tags = orginal.Tags,
                 PublishDate = DateTime.Now.Date,
@@ -269,6 +269,14 @@ namespace DBGenerator.Data
                 .Take(size)
                 .ToListAsync();
         }
+        public async Task<List<Post>> GetPagedAndFilteredPostsAsync(int page, int size)
+        {
+            return await _db.Posts
+                .OrderByDescending(x => x.PublishDate)
+                .Skip((page - 1) * size)
+                .Take(size)
+                .ToListAsync();
+        }
 
         public async Task<int> CountPosts()
         {
@@ -377,14 +385,7 @@ namespace DBGenerator.Data
         public async Task SaveNewPost(Post post)
         {
             post.CategoryId = 1;
-            post.Metas = new Metas
-            {
-                Og_Title = string.Empty,
-                Og_Description = string.Empty,
-                Og_Image = string.Empty,
-                Og_Url = string.Empty,
-                SiteTitle = string.Empty,
-            }; 
+            post.Metas = new Metas();           
             _db.Posts.Add(post);
             await _db.SaveChangesAsync();
         }

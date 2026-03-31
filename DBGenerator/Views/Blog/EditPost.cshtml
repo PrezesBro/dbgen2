@@ -4,7 +4,7 @@
 @await Html.PartialAsync("_EditPostNavBar", Model.Post)
 
 
-<div style="max-width:700px; margin:20px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
+<div class="post-container">
 	<h3>Edytuj post</h3>
 	<form asp-action="SavePostChanges" method="post">			
 		<input type="hidden" name="Id" value="@Model.Post.Id" />
@@ -85,7 +85,7 @@
 
 
 
-<div style="max-width:700px; margin:20px auto 50px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
+<div class="post-container--short">
 	<h3>Elementy posta</h3>
 
 	<form asp-action="SaveElementsChanges" method="post">
@@ -163,16 +163,7 @@
 
 @if (TempData["SuccessMessage"] != null)
 {
-	<div id="successToast" style="
-	    position: fixed;
-	    top: 10%;
-	    left: 43%;
-	    transform: translate(-50%, -50%);
-	    background: #28a745;
-	    color: white;
-	    padding: 15px 20px;
-	    border-radius: 8px;
-	    z-index: 9999;">
+	<div id="successToast" class="success-toast">
 		@TempData["SuccessMessage"]
 	</div>
 

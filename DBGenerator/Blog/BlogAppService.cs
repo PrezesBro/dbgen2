@@ -26,55 +26,55 @@ namespace DBGenerator.Blog
                 TotalPages = 1 + (await _data.CountPosts()) / 12
             };
 
-            if (page > 1) page--;
-            if (page > 1) page--;
-            if (page > 1) result.Posts.PageList.Add(0);
-
-            int cnt = result.Posts.PageList.Count + 5;
-
-            var total = result.Posts.TotalPages;
-
-            for (int i = 0; i < 5; i++)
-            {
-                if (result.Posts.PageList.Count < cnt && page <= total)
-                {
-                    result.Posts.PageList.Add(page);
-                    page++;
-                }
-            }
-
-            if (page <= total) result.Posts.PageList.Add(0);
+            result.Posts.PageList = GetPageNumbers(page, result.Posts.TotalPages);
 
             return result;
         }
 
+        public async Task<PostPageViewModel> GetPostPageVM(int page)
+        {
+            var result = new PostPageViewModel
+            {
+                Page = page,
+                Posts = await GetPostsOrderedByPublishDateAsync(page, 10),
+                TotalPages = 1 + (await _data.CountPosts()) / 10
+            };
+
+            result.PageList = GetPageNumbers(page, result.TotalPages);
+            return result;
+        }
+
+        private List<int> GetPageNumbers(int page, int totalPages)
+        {
+            var result = new List<int>();
+
+
+            if (page > 1) page--;
+            if (page > 1) page--;
+            if (page > 1) result.Add(0);
+
+            int cnt = result.Count + 5;          
+
+            for (int i = 0; i < 5; i++)
+            {
+                if (result.Count < cnt && page <= totalPages)
+                {
+                    result.Add(page);
+                    page++;
+                }
+            }
+
+            if (page <= totalPages) result.Add(0);
+
+            return result;
+        }
         public async Task<Post> GetPostWithElements(string post_name)
         {
             var post = await _data.GetPostWithElements(post_name);
             post.Elements = post.Elements.OrderBy(p => p.Order).ToList();
             return post;
-        }
-        public async Task<Post> GetPostWithElements(int id)
-        {
-            var post = await _data.GetPostWithElements(id);
-            post.Elements = post.Elements.OrderBy(p => p.Order).ToList();
-            return post;
-        }
+        }  
 
-        public async Task<EditPostViewModel> GetEditPostVM(string post_name)
-        {
-            var result = new EditPostViewModel();
-            result.Post = await _data.GetPost(post_name);
-            var elements = await _data.GetPostElementsByPostId(result.Post.Id);
-            result.PostElements = elements.Select(e => new PostElementViewModel
-            {
-                PostElement = e,
-                Content2Visibility = ContentVisibilityResolver(e.Type, 2),
-                Content3Visibility = ContentVisibilityResolver(e.Type, 3),
-                Content4Visibility = ContentVisibilityResolver(e.Type, 4)
-            }).ToList();
-            return result;
-        }
         public async Task<EditPostViewModel> GetEditPostVM(int id)
         {
             var result = new EditPostViewModel();
@@ -101,11 +101,9 @@ namespace DBGenerator.Blog
             return false;
         }
 
-        public async Task<List<Post>> GetPostsOrderedByPublishDateAsync() 
+        public async Task<List<Post>> GetPostsOrderedByPublishDateAsync(int page, int size) 
         {
-            var list = await _data.GetAllPosts();
-            
-            return list.OrderByDescending(x => x.PublishDate).ToList();
+             return await _data.GetPagedAndFilteredPostsAsync(page, size);                 
         }
 
         public async Task UpdatePost(Post model)

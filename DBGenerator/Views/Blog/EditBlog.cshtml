@@ -1,5 +1,5 @@
 ﻿@using DBGenerator.Models.Blog
-@model List<Post>
+@model PostPageViewModel
 
 
 @{
@@ -7,18 +7,8 @@
 }
 <div class="d-flex align-items-center">
     <div class="ms-auto">
-        <a class="btn fw-bold px-3 py-2 fs-6"
-           asp-action="AddNewPost"
-           style="
-               min-width:80px;
-               background-color: transparent;
-               border: 1px solid gold;
-               color: gold;
-               box-shadow: 0 0 6px gold;
-               transition: 0.3s;
-           "
-           onmouseover="this.style.boxShadow='0 0 18px gold'"
-           onmouseout="this.style.boxShadow='0 0 6px gold'">
+        <a class="btn gold fw-bold px-3 py-2 fs-6"
+           asp-action="AddNewPost">
              Dodaj Post
         </a>
     </div>
@@ -26,7 +16,7 @@
 
 <div class="container mt-4">
 
-    @foreach (var post in Model)
+    @foreach (var post in Model.Posts)
     {
         var isUpdated = updatedId.HasValue && updatedId.Value == post.Id;
         var borderStyle = isUpdated
@@ -58,53 +48,23 @@
                 </div>
 
                 <div class="ms-3 d-flex align-items-center">
-                    <a class="btn btn-sm fw-bold"
+                    <a class="btn white btn-sm fw-bold"
                        asp-action="EditPost"
-                       asp-route-id="@post.Id"
-                       style="
-                     min-width:80px;
-                     background-color: transparent;
-                     border: 1px solid white;
-                     color: white;
-                     box-shadow: 0 0 4px rgba(255,255,255,0.7);
-                     transition: 0.3s;
-           "
-                       onmouseover="this.style.boxShadow='0 0 15px rgba(255,255,255,1)'"
-                       onmouseout="this.style.boxShadow='0 0 8px rgba(255,255,255,0.7)'">
+                       asp-route-id="@post.Id">                    
                         Edytuj
                     </a>
                 </div>
                 <div class="ms-3 d-flex align-items-center">
-                    <a class="btn btn-sm fw-bold"
+                    <a class="btn white btn-sm fw-bold"
                        asp-action="CopyPost"
-                       asp-route-id="@post.Id"
-                       style="
-                         min-width:80px;
-                         background-color: transparent;
-                         border: 1px solid white;
-                         color: white;
-                         box-shadow: 0 0 4px rgba(255,255,255,0.7);
-                         transition: 0.3s;
-               "
-                       onmouseover="this.style.boxShadow='0 0 15px rgba(255,255,255,1)'"
-                       onmouseout="this.style.boxShadow='0 0 8px rgba(255,255,255,0.7)'">
+                       asp-route-id="@post.Id">
                         Klonuj
                     </a>
                 </div>
                 <div class="ms-3 d-flex align-items-center">
-                    <a class="btn btn-sm fw-bold"
+                    <a class="btn white btn-sm fw-bold"
                        asp-action="DeletePost"
-                       asp-route-id="@post.Id"
-                       style="
-                             min-width:50px;
-                             background-color: transparent;
-                             border: 1px solid white;
-                             color: white;
-                             box-shadow: 0 0 4px rgba(255,255,255,0.7);
-                             transition: 0.3s;
-                   "
-                       onmouseover="this.style.boxShadow='0 0 15px rgba(255,255,255,1)'"
-                       onmouseout="this.style.boxShadow='0 0 8px rgba(255,255,255,0.7)'">
+                       asp-route-id="@post.Id">
                         X
                     </a>
                 </div>
@@ -131,3 +91,25 @@
         }
     });
 </script>
+
+<div class="row">
+    <div class="col-12 align-content-center">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" asp-action="GetAllPosts" asp-controller="Blog">Najnowsze</a></li>
+                @foreach (var p in Model.PageList)
+                {
+                    @if (p == 0)
+                    {
+                        <li class="page-item"><p class="page-link">...</p></li>
+                    }
+                    else
+                    {
+                        <li class="page-item"><a class="page-link" asp-action="GetAllPosts" asp-controller="Blog" asp-route-p="@p">@p</a></li>
+                    }
+                }
+                <li class="page-item"><a class="page-link" asp-action="GetAllPosts" asp-controller="Blog" asp-route-p="@Model.TotalPages">Najstarsze</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

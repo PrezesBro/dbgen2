@@ -6,16 +6,15 @@ namespace DBGenerator.Blog
     {
         Task<BlogViewModel> GetBlogVM(int page);
         Task<Post> GetPostWithElements(string post_name);
-        Task<List<Post>> GetPostsOrderedByPublishDateAsync();
+        Task<List<Post>> GetPostsOrderedByPublishDateAsync(int page, int size);
         Task UpdatePost(Post model); 
         Task UpdatePostElements(List<PostElement> elements); 
-        Task<EditPostViewModel> GetEditPostVM(string post_name);
         Task<Post> GetPostWithMetasById(int postId);
         Task<Post> UpdateMetas(Post post);
         Task ClonePost(int id);
         Task DeletePost(int id);
-        Task<Post> GetPostWithElements(int id);
         Task<EditPostViewModel> GetEditPostVM(int id);
+        Task<PostPageViewModel> GetPostPageVM(int page);
         Task SaveNewPost(Post post);
     }
 }
