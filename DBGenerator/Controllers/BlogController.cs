@@ -15,7 +15,7 @@ namespace DBGenerator.Controllers
     {
         private IBlogAppService _blogAppService;
 
-        public BlogController(IBlogAppService blogAppService) 
+        public BlogController(IBlogAppService blogAppService)
         {
             _blogAppService = blogAppService;
         }
@@ -29,14 +29,15 @@ namespace DBGenerator.Controllers
 
         public async Task<IActionResult> ShowPost(string nameUrl)
         {
-            var model = await _blogAppService.GetPostWithElements(nameUrl); 
+            var model = await _blogAppService.GetPostWithElements(nameUrl);
             return View(model);
         }
         public async Task<IActionResult> EditPost(int id)
-        {   
+        {
             var model = await _blogAppService.GetEditPostVM(id);
+            model.Categories = await _blogAppService.GetAllCategories();
             ViewBag.NameUrl = model.Post.NameUrl;
-            
+
             return View("EditPost", model);
         }
 
@@ -57,7 +58,7 @@ namespace DBGenerator.Controllers
             if (ModelState.IsValid)
             {
             }
-            return RedirectToAction("GetAllPosts"); 
+            return RedirectToAction("GetAllPosts");
         }
 
         [HttpPost]
@@ -81,7 +82,7 @@ namespace DBGenerator.Controllers
                     }
                 }
             };
-            pe.PostElement.Post.Id = model.Post.Id; 
+            pe.PostElement.Post.Id = model.Post.Id;
             model.PostElements.Add(pe);
             return View("EditPost", model);
         }
@@ -109,46 +110,39 @@ namespace DBGenerator.Controllers
             await _blogAppService.DeletePost(id);
             return RedirectToAction("GetAllPosts");
         }
-        public  IActionResult AddNewPost()
+        public async Task<IActionResult>  AddNewPost()
         {
-            var model = new Post(); 
-            return View(model);
+            var categories = await _blogAppService.GetAllCategories();
+            var vm = new PostCategoryViewModel
+            {
+                Post = new Post(),
+                Categories = categories
+            };
+            
+            return View(vm);
         }
         [HttpPost]
         public async Task<IActionResult> SaveNewPost(Post post)
         {
             await _blogAppService.SaveNewPost(post);
-            if(post == null)
+            if (post == null)
                 return RedirectToAction("GetAllPosts");
 
             TempData["SuccessMessage"] = "Post został pomyślnie utworzony, uzupełnij elementy i metas!";
             return RedirectToAction("EditPost", new { id = post.Id });
         }
+        public async Task<IActionResult> AddNewCategory()
+        {
+            var categories = await _blogAppService.GetCategoryDictionary();
+            return View(categories);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddNewCategory(string newCategory)
+        {
+            //dodać string
+            await _blogAppService.AddNewCategory(newCategory);
+            return RedirectToAction("AddNewCategory"); 
+        }
     }
 }
-
-
-//przeniesc css z widoku do klasy 
-//js to samo
-
-
-//edit blog dodac przycisk na dodanie kategorii do słownika 
-//w edit post z list rozwijanej mozna wybrac kategorie
-
-//dodawanie postów
-//zmienić show post na NameUrl
-//migracja Category
-
-//paginacja w edit posts 265 w df
-//wyciągnąć mechanizm z GetBlogVM do private do paginacji
-
-
-
-
-//walidacja w poście NameUrl
-
-
-
-//za tydzien walidacja 
-//testy jednostkowe, mockowanie, fixture
-//solenium do testów

@@ -167,3 +167,14 @@ a {
     border-radius: 8px;
     z-index: 9999;
 }
+.category-card {
+    max-width: 900px;
+    margin: 25px auto;
+    background-color: rgba(0,0,0,0.1);
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 0 10px rgba(255,255,255,0.4);
+    backdrop-filter: blur(6px);
+}

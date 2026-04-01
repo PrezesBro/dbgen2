@@ -5,14 +5,21 @@
 @{
     var updatedId = TempData["UpdatedPostId"] as int?;
 }
+
 <div class="d-flex align-items-center">
     <div class="ms-auto">
+        <a class="btn white fw-bold px-3 py-2 fs-6 me-2"
+           asp-action="AddNewCategory">
+            Dodaj Kategorie
+        </a>
         <a class="btn gold fw-bold px-3 py-2 fs-6"
            asp-action="AddNewPost">
              Dodaj Post
         </a>
     </div>
 </div>
+
+
 
 <div class="container mt-4">
 

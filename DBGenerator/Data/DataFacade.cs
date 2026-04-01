@@ -307,6 +307,7 @@ namespace DBGenerator.Data
             post.PublishDate = model.PublishDate;
             post.Position = model.Position;
             post.Status = model.Status;
+            post.CategoryId = model.CategoryId;
             post.ImageUrl = model.ImageUrl;
 
             await _db.SaveChangesAsync();
@@ -384,10 +385,30 @@ namespace DBGenerator.Data
         }
         public async Task SaveNewPost(Post post)
         {
-            post.CategoryId = 1;
             post.Metas = new Metas();           
             _db.Posts.Add(post);
             await _db.SaveChangesAsync();
+        }
+
+        public async Task<Dictionary<int, string>> GetCategoryDictionary()
+        {
+            var categories = await _db.Category.ToListAsync();
+            return categories.ToDictionary(c => c.Id, c => c.Name);
+        }
+
+        public async Task AddNewCategory(string newCategory)
+        {
+            var category = new Category
+            {
+                Name = newCategory
+            };
+                
+            _db.Category.Add(category);
+            await _db.SaveChangesAsync();
+        }
+        public async Task<List<Category>> GetAllCategories()
+        {
+            return await _db.Category.ToListAsync();
         }
     }
 }
