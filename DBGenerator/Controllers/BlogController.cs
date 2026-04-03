@@ -50,14 +50,15 @@ namespace DBGenerator.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SavePostChanges(Post model)
+        public async Task<IActionResult> SavePostChanges(EditPostViewModel model)
         {
-            await _blogAppService.UpdatePost(model);
-            TempData["UpdatedPostId"] = model.Id;
-            ModelState.AddModelError(nameof(model.Category), "Błąd");
-            if (ModelState.IsValid)
-            {
-            }
+         
+            var post = model.Post;
+            await _blogAppService.UpdatePost(post);
+
+            TempData["UpdatedPostId"] = post.Id;
+
+            
             return RedirectToAction("GetAllPosts");
         }
 
@@ -84,6 +85,7 @@ namespace DBGenerator.Controllers
             };
             pe.PostElement.Post.Id = model.Post.Id;
             model.PostElements.Add(pe);
+            model.Categories = await _blogAppService.GetAllCategories();
             return View("EditPost", model);
         }
 
@@ -133,14 +135,13 @@ namespace DBGenerator.Controllers
         }
         public async Task<IActionResult> AddNewCategory()
         {
-            var categories = await _blogAppService.GetCategoryDictionary();
+            var categories = await _blogAppService.GetAllCategories();
             return View(categories);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddNewCategory(string newCategory)
         {
-            //dodać string
             await _blogAppService.AddNewCategory(newCategory);
             return RedirectToAction("AddNewCategory"); 
         }

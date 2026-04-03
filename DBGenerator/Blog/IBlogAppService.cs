@@ -16,7 +16,6 @@ namespace DBGenerator.Blog
         Task<EditPostViewModel> GetEditPostVM(int id);
         Task<PostPageViewModel> GetPostPageVM(int page);
         Task SaveNewPost(Post post);
-        Task<Dictionary<int, string>> GetCategoryDictionary();
         Task AddNewCategory(string newCategory);
         Task<List<Category>> GetAllCategories();
     }

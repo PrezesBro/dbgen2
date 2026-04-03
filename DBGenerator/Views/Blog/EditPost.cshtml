@@ -3,36 +3,35 @@
 
 @await Html.PartialAsync("_EditPostNavBar", Model.Post)
 
-
 <div class="post-container">
 	<h3>Edytuj post</h3>
 	<form asp-action="SavePostChanges" method="post">			
-		<input type="hidden" name="Id" value="@Model.Post.Id" />
-		<input type="hidden" name="NameUrl" value="@Model.Post.NameUrl" />
+		<input type="hidden" asp-for="Post.Id" />
+		<input type="hidden" asp-for="Post.NameUrl" />
 
 		<div style="margin-bottom:15px;">
-			<label>Title</label>
-			<input type="text" name="Title" value="@Model.Post.Title" class="form-control" />
+			<label asp-for="Post.Title"></label>
+			<input asp-for="Post.Title" class="form-control" />
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Description</label>
-			<textarea name="Description" class="form-control" rows="3">@Model.Post.Description</textarea>
+			<label asp-for="Post.Description"></label>
+			<textarea asp-for="Post.Description" class="form-control" rows="3"></textarea>
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Tags</label>
-			<input type="text" name="Tags" value="@Model.Post.Tags" class="form-control" />
+			<label asp-for="Post.Tags"></label>
+			<input asp-for="Post.Tags" class="form-control" />
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Publish Date</label>
-			<input type="datetime-local" name="PublishDate" value="@Model.Post.PublishDate.ToString("yyyy-MM-ddTHH:mm")" class="form-control" />
+			<label asp-for="Post.PublishDate"></label>
+			<input asp-for="Post.PublishDate" type="datetime-local" class="form-control" />
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Position</label>
-			<select name="Position" class="form-select">
+			<label asp-for="Post.Position" class="form-label"></label>
+			<select asp-for="Post.Position" class="form-select">
 				@foreach (Position pos in Enum.GetValues(typeof(Position)))
 				{
 					if (@Model.Post.Position == pos)
@@ -48,8 +47,9 @@
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Status</label>
-			<select name="Status" class="form-select">
+			<label asp-for="Post.Status" class="form-label"></label>
+			<select asp-for="Post.Status" class="form-select">
+				<option value="">-- wybierz --</option>
 				@foreach (Status st in Enum.GetValues(typeof(Status)))
 				{
 					if (@Model.Post.Status == st)
@@ -61,12 +61,12 @@
 						<option value="@st">@st</option>
 					}
 				}
-			</select>
+			</select>		
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Category</label>
-			<select name="CategoryId" class="form-select" required>
+			<label asp-for="Post.CategoryId" class="form-label"></label>
+			<select asp-for="Post.CategoryId" class="form-select">
 				@foreach (var cat in Model.Categories)
 				{
 					if (Model.Post.CategoryId == cat.Id)
@@ -82,8 +82,8 @@
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Image URL</label>
-			<input type="text" name="ImageUrl" value="@Model.Post.ImageUrl" class="form-control" />
+			<label asp-for="Post.ImageUrl"></label>
+			<input asp-for="Post.ImageUrl" class="form-control" />
 		</div>
 
 
@@ -125,7 +125,7 @@
 				<input type="hidden" asp-for="PostElements[i].PostElement.Post.Id" />
 
 				<label>Type:</label>
-				<select name="PostElements[@i].PostElement.Type" class="form-select" style="margin-bottom:5px;">
+				<select asp-for="PostElements[@i].PostElement.Type" class="form-select" style="margin-bottom:5px;">
 					@foreach (ElementType tp in Enum.GetValues(typeof(ElementType)))
 					{
 						if (Model.PostElements[i].PostElement.Type == tp)
@@ -184,10 +184,6 @@
 	<div id="successToast" class="success-toast">
 		@TempData["SuccessMessage"]
 	</div>
-
-	<script>
-		setTimeout(() => {
-			document.getElementById("successToast").style.display = "none";
-		}, 6000);
-	</script>
 }
+<script src="~/js/postScripts.js" asp-append-version="true"></script>
+

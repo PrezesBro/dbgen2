@@ -1,9 +1,10 @@
-﻿@model Dictionary<int, string>
+﻿@using DBGenerator.Models.Blog
+@model List<Category>
 
 
 <form asp-action="AddNewCategory" method="post" class="d-flex gap-2 align-items-center mt-3 mx-auto" style="width: 300px;">
     <input type="text" name="newCategory" class="form-control" placeholder="Nowa kategoria" />
-    <button type="submit" class="btn white btn-sm fw-bold">Wyślij</button>
+    <button type="submit" class="btn white btn-sm fw-bold">Dodaj</button>
 </form>
 
 <div class="container mt-4">
@@ -12,7 +13,7 @@
         <div class="card text-white mb-3 category-card">
             <div style="display:flex; align-items:center;">
                 <div style="flex-grow:1;">
-                    <h6>@category.Value</h6>
+                    <h6>@category.Name</h6>
                 </div>
             </div>
         </div>

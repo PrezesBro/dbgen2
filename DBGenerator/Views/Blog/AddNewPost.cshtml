@@ -1,40 +1,38 @@
 ﻿@using DBGenerator.Models.Blog
 @model PostCategoryViewModel
 
-<div style="max-width:700px; margin:20px auto 50px auto; background-color:#007bff; color:white; padding:20px; border-radius:10px;">
+<div class="post-container">
 	<h3>Dodaj post</h3>
 	<form asp-action="SaveNewPost" method="post">
-	@* 	<input type="hidden" name="Id" value="@Model.Post.Id" />
-		<input type="hidden" name="NameUrl" value="@Model.Post.NameUrl" / >*@
 
 		<div style="margin-bottom:15px;">
-			<label>Title</label>
-			<input type="text" name="Title" class="form-control" required />
+			<label asp-for="Post.Title"></label>
+			<input asp-for="Post.Title" class="form-control" required />
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Description</label>
-			<textarea name="Description" class="form-control" required rows="3"></textarea>
+			<label asp-for="Post.Description"></label>
+			<textarea asp-for="Post.Description" class="form-control" required rows="3"></textarea>
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>NameUrl</label>
-			<input type="text" name="NameUrl" class="form-control" required />
+			<label asp-for="Post.NameUrl">NameUrl</label>
+			<input asp-for="Post.NameUrl" class="form-control" required />
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Tags</label>
-			<input type="text" name="Tags" class="form-control" required />
+			<label asp-for="Post.Tags">Tags</label>
+			<input asp-for="Post.Tags" class="form-control" required />
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Publish Date</label>
-			<input type="datetime-local" name="PublishDate" class="form-control" required />
+			<label asp-for="Post.PublishDate">Publish Date</label>
+			<input asp-for="Post.PublishDate" class="form-control" required />
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Position</label>
-			<select name="Position" class="form-select" required>
+			<label asp-for="Post.Position"></label>
+			<select asp-for="Post.Position" class="form-select" required>
 				@foreach (Position pos in Enum.GetValues(typeof(Position)))
 				{
 					<option value="@pos">@pos</option>
@@ -43,8 +41,8 @@
 		</div>
 		
 		<div style="margin-bottom:15px;">
-			<label>Status</label>
-			<select name="Status" class="form-select" required>
+			<label asp-for="Post.Status"></label>
+			<select asp-for="Post.Status" class="form-select" required>
 				@foreach (Status st in Enum.GetValues(typeof(Status)))
 				{
 					<option value="@st">@st </option>
@@ -53,8 +51,8 @@
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Category</label>
-			<select name="CategoryId" class="form-select" required>
+			<label asp-for="Post.Category"></label>
+			<select asp-for="Post.CategoryId" class="form-select" required>
 				@foreach (var cat in Model.Categories)
 				{
 					<option value="@cat.Id">@cat.Name</option>
@@ -63,8 +61,8 @@
 		</div>
 
 		<div style="margin-bottom:15px;">
-			<label>Image URL</label>
-			<input type="text" name="ImageUrl" class="form-control" required />
+			<label asp-for="Post.ImageUrl"></label>
+			<input asp-for="Post.ImageUrl" class="form-control" required />
 		</div>
 
 		<div style="text-align:right;">

@@ -390,12 +390,6 @@ namespace DBGenerator.Data
             await _db.SaveChangesAsync();
         }
 
-        public async Task<Dictionary<int, string>> GetCategoryDictionary()
-        {
-            var categories = await _db.Category.ToListAsync();
-            return categories.ToDictionary(c => c.Id, c => c.Name);
-        }
-
         public async Task AddNewCategory(string newCategory)
         {
             var category = new Category

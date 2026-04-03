@@ -39,7 +39,6 @@ namespace DBGenerator.Data
         Task DeletePost(int id);
         Task SaveNewPost(Models.Blog.Post post);
         Task<List<Models.Blog.Post>> GetPagedAndFilteredPostsAsync(int page, int size);
-        Task<Dictionary<int, string>> GetCategoryDictionary();
         Task AddNewCategory(string newCategory);
         Task<List<Models.Blog.Category>> GetAllCategories();
     }

@@ -178,3 +178,20 @@ a {
     box-shadow: 0 0 10px rgba(255,255,255,0.4);
     backdrop-filter: blur(6px);
 }
+
+.post-box {
+    max-width: 900px;
+    margin: 20px auto;
+    background-color: rgba(0,0,0,0.1);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.3); 
+    box-shadow:0 0 10px rgba(255,255,255,0.4);
+}
+
+.post-box-update {
+    border: 2px solid lime !important;
+    box-shadow: 0 0 15px lime !important;
+}

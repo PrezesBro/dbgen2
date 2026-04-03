@@ -139,11 +139,6 @@ namespace DBGenerator.Blog
             await _data.SaveNewPost(post);
         }
 
-        public async Task<Dictionary<int, string>> GetCategoryDictionary()
-        {
-            return await _data.GetCategoryDictionary();
-        }
-
         public async Task AddNewCategory(string newCategory)
         {
             await _data.AddNewCategory(newCategory); 
