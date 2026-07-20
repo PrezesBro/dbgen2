@@ -1,6 +1,7 @@
 ﻿using DBGenerator.Models;
 using DBGenerator.Models.Ads;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using System.Runtime.CompilerServices;
 
 namespace DBGenerator.Data
@@ -182,6 +183,102 @@ namespace DBGenerator.Data
             adsOld.IsVisible = ads.IsVisible;
 
             await _db.SaveChangesAsync();
+        }
+        public async Task Delete(int id)
+        {
+            var entity = await _db.Databases.FindAsync(id);
+            if (entity != null)
+            {
+                _db.Remove(entity);
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<Column>> GetColumn(int tableId)
+        {
+            return await _db.Columns.Where(c => c.Table.Id == tableId).ToListAsync(); 
+        }
+        public async Task Save(List<Column> columns)
+        {
+            var table = _db.Tables.FirstOrDefault(t => t.Id == columns[0].Table.Id);
+            foreach (var col in table.Columns)
+            {
+                var newCol = columns.FirstOrDefault(c => c.Id == col.Id);
+                if (newCol == null)
+                {
+                    table.Columns.Remove(col); 
+                }
+                else
+                {
+                    col.Name = newCol.Name;
+                    col.Precision = newCol.Precision;
+                    col.DataType = newCol.DataType;
+                }
+            }
+            table.Columns.AddRange(columns.Where(c => c.Id == 0));
+            await _db.SaveChangesAsync();
+        }
+
+        public string GetValues(int tableId)
+        {
+            var datas = _db.Datas
+                    .Where(d => d.Table.Id == tableId)   
+                   .Select(d => d.Value)               
+                   .ToList();
+            string values = string.Join("\n", datas);
+            return values;  
+        }
+        public async Task DeleteTableValues(int tableId)
+        {
+            var recordToDelete = _db.Datas.Where(d => d.Table.Id == tableId);
+            _db.Datas.RemoveRange(recordToDelete);
+            await _db.SaveChangesAsync(); 
+        }
+      
+
+        public void AddData(Datas data)
+        {
+            _db.Datas.Add(data);
+        }
+        public async Task SaveChangesAsync()
+        {
+            await _db.SaveChangesAsync(); // zapis wszystkich zmian naraz
+        }
+
+        public async Task Save(List<ForeignKey> foreignKeys)
+        {
+            var table = _db.Tables.Include(t => t.ForeignKeys).FirstOrDefault(t => t.Id == foreignKeys[0].Table.Id);
+            foreach (var fk in table.ForeignKeys)
+            {
+                var newCol = foreignKeys.FirstOrDefault(f => f.Id == fk.Id);
+                if (newCol == null)
+                {
+                    table.ForeignKeys.Remove(fk);
+                }
+                else
+                {
+                    fk.ColumnFkName = newCol.ColumnFkName;
+                    fk.TablePkName = newCol.TablePkName;
+                }
+            }
+            table.ForeignKeys.AddRange(foreignKeys.Where(f => f.Id == 0));
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task<List<ForeignKey>> GetForeignKeys(int tableId)
+        {
+            return await _db.ForeignKeys.Where(f => f.Table.Id == tableId).ToListAsync();
+        }
+
+        public async Task<List<string>> GetTableNames(int tableId)
+        {
+            return await _db.Tables.Where(t => t.Database.Tables.Any(t => t.Id == tableId)).Select(t => t.Name).ToListAsync();
+        }
+
+        public async Task<List<string>> GetColumnNames(int tableId)
+        {
+            var tab = await _db.Tables.Include(c => c.Columns).FirstAsync(t => t.Id == tableId);
+            return tab.Columns.Select(c => c.Name).ToList();
         }
     }
 }

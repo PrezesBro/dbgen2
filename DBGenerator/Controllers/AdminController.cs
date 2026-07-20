@@ -4,6 +4,9 @@ using DBGenerator.Models;
 using DBGenerator.Models.Ads;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace DBGenerator.Controllers
@@ -13,12 +16,12 @@ namespace DBGenerator.Controllers
     {
         private IAdminAppService _adminAppService;
 
-        public AdminController(IAdminAppService adminAppService) 
+        public AdminController(IAdminAppService adminAppService)
         {
             _adminAppService = adminAppService;
         }
 
-        public async Task<IActionResult> Index() 
+        public async Task<IActionResult> Index()
         {
             var model = new AdminViewModel();
             model.Databases = await _adminAppService.GetDatabases();
@@ -37,9 +40,14 @@ namespace DBGenerator.Controllers
             await _adminAppService.Clone(id);
             return RedirectToAction("Index");
         }
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _adminAppService.DeleteDatabase(id);
+            return RedirectToAction("Index");
+        }
 
         [HttpGet]
-        public IActionResult Add() 
+        public IActionResult Add()
         {
             var model = new Database();
             model.CreateDate = DateTime.Now.Date;
@@ -81,6 +89,95 @@ namespace DBGenerator.Controllers
         {
             await _adminAppService.Save(ads);
             return RedirectToAction("Index");
+        }
+        
+        public async Task<IActionResult> EditColumn(int id) //zmiana z talbeId na id żeby widok przekazał dane
+        {
+            var model = await _adminAppService.GetColumns(id);
+            if (model.Count == 0)
+            {
+                model.Add(new Column
+                {
+                    Table = new Table
+                    {
+                        Id = id
+                    }
+                });  
+            }
+            return View(model); 
+            //dodać kolumny i usunąć 
+            //dodać przycisk zapisz 
+        }
+        [HttpPost]
+        public async Task<IActionResult> ColumnActions(List<Column> model, string actionType)
+        {
+            if (actionType == "add")
+            {
+                model.Add(new Column());               
+            }
+            else if(actionType == "save")
+            {
+                await _adminAppService.Save(model);
+                return RedirectToAction("EditTable", model[0].Table.Id); 
+            }
+
+            return RedirectToAction("EditColumn", model);
+        }
+
+
+        public async Task<IActionResult> DeleteColumn(int tableId, int columnId)
+        {
+            var model = await _adminAppService.GetColumns(tableId);
+            var columnToRemove = model.FirstOrDefault(c => c.Id == columnId);
+
+            if (columnToRemove != null)
+            {
+                model.Remove(columnToRemove);
+            }
+            
+            return View("EditColumn", model);
+        }
+
+        public  IActionResult EditData(int id)
+        {
+            var values = _adminAppService.GetValues(id);
+            ViewBag.TableId = id;
+            return View("EditData", values); 
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveValues(int tableId, string text)
+        {
+            
+            await _adminAppService.DeleteTableValuesAsync(tableId);
+         
+            await _adminAppService.SaveValuesAsync(tableId, text);
+
+
+            return RedirectToAction("EditTable", new {id = tableId }); //jak było redirect to EditData to wyrzucało wyjątek null w AddTable View że model.id =null
+        }
+
+        public async Task<IActionResult> EditForeignKeys(int id)
+        {
+            var model = await _adminAppService.GetForeignKeysViewModel(id);
+            if(model.ForeignKeys.Count == 0)
+            {
+                model.ForeignKeys.Add(new ForeignKey { Table = new Table { Id = id } });
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForeignKeysAction(ForeignKeysViewModel model, string actionType)
+        {
+            if(actionType == "add")
+            {
+                model.ForeignKeys.Add(new ForeignKey());
+                await _adminAppService.FillSelectLists(model);
+                return View("EditForeignKeys", model);
+            }
+            await _adminAppService.Save(model.ForeignKeys);
+            return RedirectToAction("EditTable", new { id = model.ForeignKeys[0].Table.Id });
         }
     }
 }

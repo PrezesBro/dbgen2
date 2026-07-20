@@ -1,0 +1,36 @@
+﻿@model ForeignKeysViewModel
+
+<form asp-action="ForeignKeysAction" method="post">
+    @for(int i = 0; i < Model.ForeignKeys.Count; i++)
+    {
+        <input hidden asp-for="ForeignKeys[i].Table.Id"/>
+        <div class="row">
+            <div class="col-6">
+                <label asp-for="ForeignKeys[i].ColumnFkName" class="form-label"></label>
+                <select asp-for="ForeignKeys[i].ColumnFkName" class="form-select">
+                    <option value="">-- wybierz --</option>
+                    @foreach (var col in Model.Columnts)
+                    {
+                        <option value="@col">@col</option>
+                    }
+                </select>
+                <span asp-validation-for="ForeignKeys[i].ColumnFkName" class="text-danger"></span>
+            </div>
+            <div class="col-6">
+                <label asp-for="ForeignKeys[i].TablePkName" class="form-label"></label>
+                <select asp-for="ForeignKeys[i].TablePkName" class="form-select">
+                    <option value="">-- wybierz --</option>
+                    @foreach (var col in Model.Tables)
+                    {
+                        <option value="@col">@col</option>
+                    }
+                </select>
+                <span asp-validation-for="ForeignKeys[i].TablePkName" class="text-danger"></span>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <button type="submit" name="actionType" value="save" class="btn btn-success">Zapisz</button>
+        <button type="submit" name="actionType" value="add" class="btn btn-primary">Dodaj klucz obcy</button>
+    </div>
+</form>

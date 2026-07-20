@@ -1,13 +1,15 @@
 ﻿using DBGenerator.Data;
+using DBGenerator.Data.Migrations;
 using DBGenerator.Models;
 using DBGenerator.Models.Ads;
+using Microsoft.EntityFrameworkCore;
 
 namespace DBGenerator.Admin
 {
     public class AdminAppService : IAdminAppService
     {
         IDataFacade _data;
-        public AdminAppService(IDataFacade data) 
+        public AdminAppService(IDataFacade data)
         {
             _data = data;
         }
@@ -55,6 +57,78 @@ namespace DBGenerator.Admin
         public async Task Save(Ads ads)
         {
             await _data.Save(ads);
+        }
+        public async Task DeleteDatabase(int id)
+        {
+            await _data.Delete(id);
+        }
+
+        public async Task<List<Column>> GetColumns(int tableId)
+        {
+            return await _data.GetColumn(tableId);
+        }
+        public async Task Save(List<Column> columns)
+        {
+            await _data.Save(columns);
+        }
+
+
+        public string GetValues(int tableId)
+        {
+            var values = _data.GetValues(tableId);
+            return values;
+        }
+
+        public async Task DeleteTableValuesAsync(int tableId)
+        {
+            await _data.DeleteTableValues(tableId);
+        }
+        public async Task SaveValuesAsync(int tableId, string text)
+        {
+            var table = await _data.GetTable(tableId);
+
+            if (table == null)
+                throw new InvalidOperationException($"Tabela o Id={tableId} nie istnieje");
+            
+            var lines = text.Split('\n');         
+            foreach (var line in lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    var data = new Datas
+                    {
+                        Table = table,
+                        Value = line.Trim()
+                    };
+
+                   
+                    _data.AddData(data);
+                }
+            }
+            await _data.SaveChangesAsync();
+        }
+
+        public async Task Save(List<ForeignKey> foreignKeys)
+        {
+            await _data.Save(foreignKeys);
+        }
+
+        public async Task<ForeignKeysViewModel> GetForeignKeysViewModel(int tableId)
+        {
+            return new ForeignKeysViewModel
+            {
+                ForeignKeys = await _data.GetForeignKeys(tableId),
+                Tables = await _data.GetTableNames(tableId),
+                Columnts = await _data.GetColumnNames(tableId)
+            };
+        }
+
+        public async Task<ForeignKeysViewModel> FillSelectLists(ForeignKeysViewModel fkvm)
+        {
+            var tableId = fkvm.ForeignKeys[0].Table.Id;
+            fkvm.Tables = await _data.GetTableNames(tableId);
+            fkvm.Columnts = await _data.GetColumnNames(tableId);
+            return fkvm;
         }
     }
 }
